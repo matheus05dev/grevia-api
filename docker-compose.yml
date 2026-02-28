@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=greviadb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
