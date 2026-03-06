@@ -1,12 +1,12 @@
 package com.projeto1cc.grevia.care.service;
 
-import com.projeto1cc.grevia.care.CarePlan;
+import com.projeto1cc.grevia.care.model.CarePlan;
 import com.projeto1cc.grevia.care.dto.CarePlanRequestDTO;
 import com.projeto1cc.grevia.care.dto.CarePlanResponseDTO;
 import com.projeto1cc.grevia.care.enums.FrequencyType;
 import com.projeto1cc.grevia.care.mapper.CarePlanMapper;
 import com.projeto1cc.grevia.care.repository.CarePlanRepository;
-import com.projeto1cc.grevia.plant.Plant;
+import com.projeto1cc.grevia.plant.model.Plant;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

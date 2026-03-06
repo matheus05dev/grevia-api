@@ -1,6 +1,6 @@
 package com.projeto1cc.grevia.plant.mapper;
 
-import com.projeto1cc.grevia.plant.Plant;
+import com.projeto1cc.grevia.plant.model.Plant;
 import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
 import org.mapstruct.Mapper;

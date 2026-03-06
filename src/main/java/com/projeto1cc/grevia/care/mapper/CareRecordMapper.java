@@ -1,6 +1,6 @@
 package com.projeto1cc.grevia.care.mapper;
 
-import com.projeto1cc.grevia.care.CareRecord;
+import com.projeto1cc.grevia.care.model.CareRecord;
 import com.projeto1cc.grevia.care.dto.CareRecordRequestDTO;
 import com.projeto1cc.grevia.care.dto.CareRecordResponseDTO;
 import org.mapstruct.Mapper;
