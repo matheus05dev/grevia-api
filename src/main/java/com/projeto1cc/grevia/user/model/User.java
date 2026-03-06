@@ -36,6 +36,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    private java.time.LocalDate lastCareDate;
+
+    private Integer currentStreak = 0;
+
+    private Integer totalCareActions = 0;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -63,6 +69,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status == Status.Ativo;
+        return this.status == Status.Active;
     }
 }
