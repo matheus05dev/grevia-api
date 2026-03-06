@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,6 +41,14 @@ public class UserRestController {
         String email = getAuthenticatedEmail();
         userService.deactivateUserByEmail(email);
         return ResponseEntity.noContent().build();
+    }
+
+    // PATCH /api/users/{id}/promote — Promotes a user to ADMIN (Admin only)
+    @PatchMapping("/{id}/promote")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> promoteUser(@PathVariable Long id) {
+        userService.promoteToAdmin(id);
+        return ResponseEntity.ok().build();
     }
 
     private String getAuthenticatedEmail() {

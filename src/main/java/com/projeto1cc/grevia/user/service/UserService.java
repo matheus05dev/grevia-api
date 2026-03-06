@@ -27,6 +27,7 @@ public class UserService {
         User user = userMapper.toUser(userRequestDTO);
         user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
         user.setStatus(Status.Active);
+        user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponseDTO(savedUser);
     }
@@ -39,7 +40,7 @@ public class UserService {
             if (userRequestDTO.password() != null && !userRequestDTO.password().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
             }
-            user.setRole(userRequestDTO.role());
+            // Role is NOT updated here for security reasons
             User updatedUser = userRepository.save(user);
             return userMapper.toUserResponseDTO(updatedUser);
         });
@@ -103,5 +104,13 @@ public class UserService {
         // 3. Criptografar e atualizar a nova senha.
         // 4. Invalidar o token.
         System.out.println("Redefinindo senha com o token: " + token);
+    }
+
+    @Transactional
+    public void promoteToAdmin(Long id) {
+        userRepository.findById(id).ifPresent(user -> {
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+        });
     }
 }
