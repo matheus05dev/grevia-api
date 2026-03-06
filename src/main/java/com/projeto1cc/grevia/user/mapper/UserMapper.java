@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     @Mapping(target = "totalPoints", ignore = true)
+    @Mapping(target = "role", ignore = true)
     User toUser(UserRequestDTO dto);
 
     UserResponseDTO toUserResponseDTO(User user);

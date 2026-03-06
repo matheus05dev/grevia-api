@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Admin Configuration (Passwords & Emails)
+admin-config.properties
