@@ -1,6 +1,6 @@
 package com.projeto1cc.grevia.plant.repository;
 
-import com.projeto1cc.grevia.plant.Plant;
+import com.projeto1cc.grevia.plant.model.Plant;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

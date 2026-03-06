@@ -1,6 +1,6 @@
 package com.projeto1cc.grevia.care.repository;
 
-import com.projeto1cc.grevia.care.CareRecord;
+import com.projeto1cc.grevia.care.model.CareRecord;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

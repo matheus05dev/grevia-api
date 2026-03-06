@@ -1,6 +1,5 @@
-package com.projeto1cc.grevia.care;
+package com.projeto1cc.grevia.care.model;
 
-import com.projeto1cc.grevia.care.model.CarePlan;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.projeto1cc.grevia.plant;
+package com.projeto1cc.grevia.plant.model;
 
 import com.projeto1cc.grevia.plant.enums.SoilType;
 import com.projeto1cc.grevia.user.model.User;
