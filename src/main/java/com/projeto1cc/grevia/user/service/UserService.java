@@ -26,7 +26,7 @@ public class UserService {
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = userMapper.toUser(userRequestDTO);
         user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
-        user.setStatus(Status.Ativo);
+        user.setStatus(Status.Active);
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponseDTO(savedUser);
     }
@@ -48,7 +48,7 @@ public class UserService {
     @Transactional
     public void deactivateUser(Long id) {
         userRepository.findById(id).ifPresent(user -> {
-            user.setStatus(Status.Desativado);
+            user.setStatus(Status.Inactive);
             userRepository.save(user);
         });
     }
