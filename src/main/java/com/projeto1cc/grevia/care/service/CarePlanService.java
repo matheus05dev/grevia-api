@@ -27,17 +27,17 @@ public class CarePlanService {
     @Transactional
     public CarePlanResponseDTO createCarePlan(Long plantId, CarePlanRequestDTO requestDTO, String userEmail) {
         Plant plant = plantRepository.findById(plantId)
-                .orElseThrow(() -> new RuntimeException("Plant not found"));
+                .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
 
         if (!plant.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("You do not have permission to manage this plant's care plans");
+            throw new RuntimeException("Você não tem permissão para gerenciar os planos de cuidado desta planta");
         }
 
         CarePlan carePlan = carePlanMapper.toEntity(requestDTO);
         carePlan.setPlant(plant);
         
-        LocalDate baseDate = requestDTO.getStartDate() != null ? requestDTO.getStartDate() : LocalDate.now();
-        carePlan.setNextCareDate(calculateNextDate(baseDate, requestDTO.getFrequencyType()));
+        LocalDate initialDate = requestDTO.startDate() != null ? requestDTO.startDate() : LocalDate.now();
+        carePlan.setNextCareDate(initialDate);
 
         CarePlan savedPlan = carePlanRepository.save(carePlan);
         return carePlanMapper.toResponseDTO(savedPlan);
@@ -46,10 +46,10 @@ public class CarePlanService {
     @Transactional(readOnly = true)
     public List<CarePlanResponseDTO> getCarePlansByPlantId(Long plantId, String userEmail) {
         Plant plant = plantRepository.findById(plantId)
-                .orElseThrow(() -> new RuntimeException("Plant not found"));
+                .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
 
         if (!plant.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("You do not have permission to view this plant's care plans");
+            throw new RuntimeException("Você não tem permissão para visualizar os planos de cuidado desta planta");
         }
 
         return carePlanRepository.findByPlantId(plantId).stream()
@@ -60,20 +60,23 @@ public class CarePlanService {
     @Transactional
     public CarePlanResponseDTO updateCarePlan(Long plantId, Long careId, CarePlanRequestDTO requestDTO, String userEmail) {
         CarePlan carePlan = carePlanRepository.findById(careId)
-                .orElseThrow(() -> new RuntimeException("Care Plan not found"));
+                .orElseThrow(() -> new RuntimeException("Plano de cuidado não encontrado"));
 
         if (!carePlan.getPlant().getId().equals(plantId)) {
-            throw new RuntimeException("Care Plan does not belong to the specified plant");
+            throw new RuntimeException("O plano de cuidado não pertence a planta especificada");
         }
 
         if (!carePlan.getPlant().getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("You do not have permission to update this care plan");
+            throw new RuntimeException("Você não tem permissão para atualizar esse plano de cuidado");
         }
 
         carePlanMapper.updateEntityFromDto(requestDTO, carePlan);
         
-        LocalDate baseDate = requestDTO.getStartDate() != null ? requestDTO.getStartDate() : LocalDate.now();
-        carePlan.setNextCareDate(calculateNextDate(baseDate, requestDTO.getFrequencyType()));
+        if (requestDTO.startDate() != null) {
+            carePlan.setNextCareDate(requestDTO.startDate());
+        } else if (carePlan.getNextCareDate() == null) {
+            carePlan.setNextCareDate(LocalDate.now());
+        }
 
         CarePlan updatedPlan = carePlanRepository.save(carePlan);
         return carePlanMapper.toResponseDTO(updatedPlan);
@@ -82,14 +85,14 @@ public class CarePlanService {
     @Transactional
     public void deleteCarePlan(Long plantId, Long careId, String userEmail) {
         CarePlan carePlan = carePlanRepository.findById(careId)
-                .orElseThrow(() -> new RuntimeException("Care Plan not found"));
+                .orElseThrow(() -> new RuntimeException("Plano de cuidado não encontrado"));
 
         if (!carePlan.getPlant().getId().equals(plantId)) {
-            throw new RuntimeException("Care Plan does not belong to the specified plant");
+            throw new RuntimeException("O plano de cuidado não pertence a planta especificada");
         }
 
         if (!carePlan.getPlant().getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("You do not have permission to delete this care plan");
+            throw new RuntimeException("Você não tem permissão para deletar esse plano de cuidado");
         }
 
         carePlanRepository.delete(carePlan);

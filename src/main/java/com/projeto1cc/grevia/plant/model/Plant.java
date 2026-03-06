@@ -1,6 +1,7 @@
 package com.projeto1cc.grevia.plant.model;
 
 import com.projeto1cc.grevia.plant.enums.SoilType;
+import com.projeto1cc.grevia.plant.enums.Species;
 import com.projeto1cc.grevia.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,7 +20,11 @@ public class Plant {
     @Column(nullable = false)
     private String name;
 
-    private String species;
+    @Enumerated(EnumType.STRING)
+    private Species species;
+
+    @Column(name = "custom_species_name")
+    private String customSpeciesName;
 
     @Column(length = 2000)
     private String recommendations;

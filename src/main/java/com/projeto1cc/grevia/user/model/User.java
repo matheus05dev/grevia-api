@@ -43,6 +43,9 @@ public class User implements UserDetails {
 
     private Integer totalCareActions = 0;
 
+    @Column(name = "total_points")
+    private Integer totalPoints = 0;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

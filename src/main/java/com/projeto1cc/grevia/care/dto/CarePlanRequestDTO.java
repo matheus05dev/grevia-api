@@ -7,14 +7,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
-public class CarePlanRequestDTO {
-
-    @NotNull(message = "Care type is required")
-    private CareType careType;
-
-    @NotNull(message = "Frequency is required")
-    private FrequencyType frequencyType;
-
-    private LocalDate startDate; // Optional, defaults to today
-}
+public record CarePlanRequestDTO(
+    @NotNull(message = "O tipo de cuidado é obrigatório") CareType careType,
+    @NotNull(message = "A frequência de cuidado é obrigatória") FrequencyType frequencyType,
+    LocalDate startDate
+) {}
