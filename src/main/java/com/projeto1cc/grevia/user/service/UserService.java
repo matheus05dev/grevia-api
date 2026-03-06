@@ -5,6 +5,7 @@ import com.projeto1cc.grevia.user.dto.UserRequestDTO;
 import com.projeto1cc.grevia.user.dto.UserResponseDTO;
 import com.projeto1cc.grevia.user.mapper.UserMapper;
 import com.projeto1cc.grevia.user.model.User;
+import com.projeto1cc.grevia.user.model.enums.Role;
 import com.projeto1cc.grevia.user.model.enums.Status;
 import com.projeto1cc.grevia.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
