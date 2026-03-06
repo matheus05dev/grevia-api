@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/plants")
 @RequiredArgsConstructor
-public class PlantController {
+public class PlantRestController {
 
     private final PlantService plantService;
     private final FileStorageService fileStorageService;

@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/species/suggestions")
 @RequiredArgsConstructor
-public class SpeciesSuggestionController {
+public class SpeciesSuggestionRestController {
 
     private final SpeciesSuggestionService service;
 
