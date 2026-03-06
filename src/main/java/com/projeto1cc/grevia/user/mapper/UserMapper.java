@@ -1,6 +1,5 @@
 package com.projeto1cc.grevia.user.mapper;
 
-
 import com.projeto1cc.grevia.user.dto.UserRequestDTO;
 import com.projeto1cc.grevia.user.dto.UserResponseDTO;
 import com.projeto1cc.grevia.user.model.User;
@@ -10,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User toUser(UserRequestDTO userRequestDTO);
+    @Mapping(target = "totalPoints", ignore = true)
+    User toUser(UserRequestDTO dto);
 
-    @Mapping(source = "id", target = "id")
     UserResponseDTO toUserResponseDTO(User user);
 }

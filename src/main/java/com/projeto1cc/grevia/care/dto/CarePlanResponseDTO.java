@@ -6,12 +6,10 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
-public class CarePlanResponseDTO {
-
-    private Long id;
-    private CareType careType;
-    private FrequencyType frequencyType;
-    private LocalDate nextCareDate;
-    private Long plantId;
-}
+public record CarePlanResponseDTO(
+    Long id,
+    CareType careType,
+    FrequencyType frequencyType,
+    LocalDate nextCareDate,
+    Long plantId
+) {}

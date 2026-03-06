@@ -59,6 +59,31 @@ public class UserService {
     }
 
     @Transactional
+    public Optional<UserResponseDTO> findUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(userMapper::toUserResponseDTO);
+    }
+
+    @Transactional
+    public Optional<UserResponseDTO> updateUserByEmail(String email, UserRequestDTO dto) {
+        return userRepository.findByEmail(email).map(user -> {
+            user.setName(dto.name());
+            if (dto.password() != null && !dto.password().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(dto.password()));
+            }
+            User updatedUser = userRepository.save(user);
+            return userMapper.toUserResponseDTO(updatedUser);
+        });
+    }
+
+    @Transactional
+    public void deactivateUserByEmail(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            user.setStatus(Status.Inactive);
+            userRepository.save(user);
+        });
+    }
+
+    @Transactional
     public void requestPasswordReset(String email) {
         // Lógica para gerar um token de reset, salvar no banco e enviar por e-mail
         // Ex:

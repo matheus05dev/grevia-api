@@ -16,7 +16,7 @@ public interface PlantMapper {
     @Mapping(target = "user", ignore = true)
     Plant toEntity(PlantRequestDTO dto);
 
-    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.name", target = "ownerName")
     PlantResponseDTO toResponseDTO(Plant plant);
 
     @Mapping(target = "id", ignore = true)

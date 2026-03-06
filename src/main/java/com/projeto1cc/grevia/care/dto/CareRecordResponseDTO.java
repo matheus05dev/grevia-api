@@ -4,10 +4,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
-public class CareRecordResponseDTO {
-    private Long id;
-    private String notes;
-    private LocalDate careDate;
-    private Long carePlanId;
-}
+public record CareRecordResponseDTO(
+    Long id,
+    String notes,
+    LocalDate careDate,
+    Long carePlanId
+) {}
