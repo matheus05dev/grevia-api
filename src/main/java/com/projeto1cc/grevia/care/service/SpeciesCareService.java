@@ -23,6 +23,7 @@ public class SpeciesCareService {
             case CACTO:
             case SUCULENTA:
             case ZAMIOCULCA:
+            case ESPADA_DE_SAO_JORGE:
                 cares.add(createCare(CareType.REGA, FrequencyType.QUINZENAL, 0));
                 cares.add(createCare(CareType.ADUBACAO, FrequencyType.BIMESTRAL, 15));
                 break;
@@ -33,12 +34,11 @@ public class SpeciesCareService {
                 cares.add(createCare(CareType.PODA, FrequencyType.MENSAL, 10));
                 cares.add(createCare(CareType.ADUBACAO, FrequencyType.MENSAL, 20));
                 break;
-            case ESPADA_DE_SAO_JORGE:
             case COSTELA_DE_ADAO:
             case ORQUIDEA:
                 cares.add(createCare(CareType.REGA, FrequencyType.SEMANAL, 0));
                 cares.add(createCare(CareType.ADUBACAO, FrequencyType.BIMESTRAL, 15));
-                cares.add(createCare(CareType.CONTROLE_PRAGAS, FrequencyType.SEMANAL, 30));
+                cares.add(createCare(CareType.CONTROLE_PRAGAS, FrequencyType.QUINZENAL, 30));
                 break;
             case ROSA:
                 cares.add(createCare(CareType.REGA, FrequencyType.SEMANAL, 0));

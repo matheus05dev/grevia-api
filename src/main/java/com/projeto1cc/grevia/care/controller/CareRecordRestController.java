@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cares/{carePlanId}/records")
 @RequiredArgsConstructor
-public class CareRecordController {
+public class CareRecordRestController {
 
     private final CareRecordService careRecordService;
 
