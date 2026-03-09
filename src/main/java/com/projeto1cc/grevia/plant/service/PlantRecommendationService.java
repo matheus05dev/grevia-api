@@ -70,39 +70,57 @@ public class PlantRecommendationService {
                 "🌹 Rosa: precisa de sol pleno (mínimo 6h/dia) e rega regular de 1x por semana, mantendo o solo levemente úmido."
                 + " Regue na base, evitando molhar as folhas para prevenir fungos. Adube mensalmente com fertilizante NPK equilibrado."
                 + " Realize podas mensais de flores secas e faça controle preventivo de pragas a cada 15 dias.";
-            case TOMATE ->
-                "🍅 Tomate: cultura exigente que precisa de sol direto pleno (8h/dia), rega regular e consistente."
-                + " Regue diariamente em dias quentes, mantendo o solo uniformemente úmido para evitar rachadura dos frutos."
-                + " Tutore as hastes, remova brotos laterais (\"filhos\") e adube com fósforo e potássio na fase de frutificação.";
-            case ALFACE ->
-                "🥬 Alface: prefere clima ameno, dias de temperatura abaixo de 25°C e boa luminosidade (4–6h de sol)."
-                + " Regue diariamente ou a cada 2 dias para manter o solo úmido mas nunca encharcado."
-                + " Evite pleno sol em horários de pico no verão — leve sombreamento preserva as folhas e evita florescimento precoce.";
-            case CEBOLINHA ->
-                "🌿 Cebolinha: fácil de cultivar, prefere solo fértil e rega regular (a cada 2–3 dias)."
-                + " Requer pelo menos 4–6h de luz solar por dia. Colha as folhas a partir de 15 cm de altura,"
-                + " sempre deixando a base para rebrotar. Adube com nitrogênio a cada 30 dias para folhas vigorosas.";
-            case SALSINHA ->
-                "🌿 Salsinha: cultive em local com boa luminosidade (6h/dia) e regue regularmente para manter o solo levemente úmido."
-                + " Colha os galhos externos primeiro para estimular o crescimento do centro."
-                + " Evite o florescimento (planta \"boltar\"): se aparecerem flores, remova-as para prolongar a produção de folhas.";
-            case MANJERICAO ->
-                "🌿 Manjericão: planta de clima quente que ama sol pleno (6–8h/dia) e rega frequente."
-                + " Mantenha o solo úmido, mas com boa drenagem. Remova flores assim que surgirem para prolongar a vida da planta."
-                + " Colha as folhas pelo topo para estimular o crescimento lateral e deixar a planta mais densa.";
-            case HORTELA ->
-                "🌿 Hortelã: cresce de forma vigorosa e pode invadir o jardim — cultive de preferência em vasos."
-                + " Prefere luz parcial (4–6h de sol) e solo sempre úmido. Regue regularmente (a cada 1–2 dias)."
-                + " Colha as pontas para estimular o crescimento. Tolera divisão das raízes para propagação fácil.";
-            case MORANGO ->
-                "🍓 Morango: prefere sol pleno (8h/dia) e solo fértil com boa drenagem."
-                + " Regue regularmente (a cada 1–2 dias), mantendo solo úmido mas nunca encharcado."
-                + " Coloque palha (mulching) ao redor das plantas para conservar umidade e proteger os frutos do solo."
-                + " Remova as estolhas (runners) para concentrar energia nos frutos.";
-            case PIMENTA ->
-                "🌶️ Pimenta: cultura tropical que ama calor e sol pleno (8h/dia)."
-                + " Regue regularmente mas com moderação (a cada 2–3 dias), pois tolera levemente a seca mas não o encharcamento."
-                + " Adube com fósforo e potássio para estimular a frutificação. Colha quando atingir a cor desejada.";
+            case TOMATE -> "🍅 Tomate: Área mínima: Vaso 15 L. Colheita: 70–90 dias. Adubo: Composto + potássio. Rega: 1x dia. Dica: Use tutor.";
+            case ALFACE -> "🥬 Alface: Área mínima: Vaso 2–3 L. Colheita: 30–45 dias. Adubo: Húmus de minhoca. Rega: 1x por dia. Dica: Prefere meia-sombra em clima quente.";
+            case CEBOLINHA -> "🌿 Cebolinha: Área mínima: Vaso 2 L. Colheita: 30–60 dias. Adubo: Húmus. Rega: 3x semana. Dica: Corte acima da base.";
+            case SALSINHA -> "🌿 Salsinha: Área mínima: Vaso 2 L. Colheita: 60–70 dias. Adubo: Composto. Rega: 3x semana. Dica: Germinação lenta.";
+            case MANJERICAO -> "🌿 Manjericão: Área mínima: Vaso 3 L. Colheita: 40–60 dias. Adubo: Húmus. Rega: 3x semana. Dica: Podar pontas.";
+            case HORTELA -> "🌿 Hortelã: Área mínima: Vaso 3 L. Colheita: 40–60 dias. Adubo: Composto. Rega: 3–4x semana. Dica: Espalha rápido.";
+            case MORANGO -> "🍓 Morango: Área mínima: Vaso 5 L. Colheita: 60–90 dias. Adubo: Húmus. Rega: 1x dia. Dica: Boa drenagem.";
+            case PIMENTA -> "🌶️ Pimenta: Área mínima: Vaso 10 L. Colheita: 80–100 dias. Adubo: Húmus. Rega: 1x dia. Dica: Colher quando maduro.";
+            case RUCULA -> "🥬 Rúcula: Área mínima: Vaso 2 L. Colheita: 30–40 dias. Adubo: Composto orgânico. Rega: 1x por dia. Dica: Colheita de folhas jovens.";
+            case ESPINAFRE -> "🥬 Espinafre: Área mínima: Vaso 3 L. Colheita: 40–50 dias. Adubo: Húmus. Rega: 1x por dia. Dica: Solo sempre úmido.";
+            case COUVE -> "🥬 Couve: Área mínima: Vaso 10 L. Colheita: 60–90 dias. Adubo: Composto + NPK leve. Rega: 3–4x semana. Dica: Retire folhas externas primeiro.";
+            case COENTRO -> "🌿 Coentro: Área mínima: Vaso 2 L. Colheita: 30–45 dias. Adubo: Composto. Rega: 3x semana. Dica: Evitar calor extremo.";
+            case TOMATE_CEREJA -> "🍅 Tomate cereja: Área mínima: Vaso 15 L. Colheita: 70–90 dias. Adubo: Composto + potássio. Rega: 1x dia. Dica: Use tutor.";
+            case PIMENTAO -> "🫑 Pimentão: Área mínima: Vaso 15 L. Colheita: 80–100 dias. Adubo: Composto. Rega: 1x dia. Dica: Boa luz solar.";
+            case PEPINO -> "🥒 Pepino: Área mínima: Vaso 15 L. Colheita: 60–80 dias. Adubo: Composto. Rega: 1x dia. Dica: Use treliça.";
+            case ABOBRINHA -> "🥒 Abobrinha: Área mínima: 1 m². Colheita: 50–70 dias. Adubo: Composto. Rega: 1x dia. Dica: Muito sol.";
+            case BERINJELA -> "🍆 Berinjela: Área mínima: Vaso 15 L. Colheita: 80–100 dias. Adubo: Composto. Rega: 1x dia. Dica: Boa drenagem.";
+            case CENOURA -> "🥕 Cenoura: Área mínima: Vaso 5 L. Colheita: 70–80 dias. Adubo: Composto. Rega: 3x semana. Dica: Solo profundo.";
+            case BETERRABA -> "🍠 Beterraba: Área mínima: Vaso 5 L. Colheita: 60–70 dias. Adubo: Húmus. Rega: 3x semana. Dica: Sol pleno.";
+            case RABANETE -> "🌷 Rabanete: Área mínima: Vaso 2 L. Colheita: 25–35 dias. Adubo: Composto. Rega: 1x dia. Dica: Crescimento rápido.";
+            case ALHO -> "🧄 Alho: Área mínima: Vaso 5 L. Colheita: 90–120 dias. Adubo: Composto. Rega: 3x semana. Dica: Plantar dentes.";
+            case CEBOLA -> "🧅 Cebola: Área mínima: Vaso 5 L. Colheita: 90–120 dias. Adubo: Composto. Rega: 3x semana. Dica: Boa luminosidade.";
+            case ERVILHA -> "🫛 Ervilha: Área mínima: Vaso 10 L. Colheita: 60–70 dias. Adubo: Composto. Rega: 3x semana. Dica: Use suporte.";
+            case FEIJAO -> "🫘 Feijão: Área mínima: Vaso 10 L. Colheita: 60–70 dias. Adubo: Composto. Rega: 3x semana. Dica: Plantar direto.";
+            case FEIJAO_VAGEM -> "🫛 Feijão-vagem: Área mínima: Vaso 10 L. Colheita: 60–70 dias. Adubo: Composto. Rega: 3x semana. Dica: Produz bastante.";
+            case MILHO_ANAO -> "🌽 Milho anão: Área mínima: 1 m². Colheita: 90 dias. Adubo: Composto. Rega: 3x semana. Dica: Plantar em grupo.";
+            case BATATA -> "🥔 Batata: Área mínima: Vaso 20 L. Colheita: 90–110 dias. Adubo: Composto. Rega: 3x semana. Dica: Cobrir com terra.";
+            case BATATA_DOCE -> "🍠 Batata-doce: Área mínima: 1 m². Colheita: 120 dias. Adubo: Composto. Rega: 3x semana. Dica: Clima quente.";
+            case ALMEIRAO -> "🥬 Almeirão: Área mínima: Vaso 3 L. Colheita: 50 dias. Adubo: Composto. Rega: 3x semana. Dica: Folhas contínuas.";
+            case ACELGA -> "🥬 Acelga: Área mínima: Vaso 5 L. Colheita: 60 dias. Adubo: Húmus. Rega: 3x semana. Dica: Tolera frio.";
+            case MOSTARDA -> "🥬 Mostarda: Área mínima: Vaso 3 L. Colheita: 40 dias. Adubo: Composto. Rega: 3x semana. Dica: Cresce rápido.";
+            case ENDIVIA -> "🥬 Endívia: Área mínima: Vaso 3 L. Colheita: 50 dias. Adubo: Composto. Rega: 3x semana. Dica: Prefere clima ameno.";
+            case FUNCHO -> "🌿 Funcho: Área mínima: Vaso 5 L. Colheita: 80 dias. Adubo: Composto. Rega: 3x semana. Dica: Sol pleno.";
+            case TOMILHO -> "🌿 Tomilho: Área mínima: Vaso 2 L. Colheita: 60 dias. Adubo: Composto leve. Rega: 2x semana. Dica: Pouca água.";
+            case ALECRIM -> "🌿 Alecrim: Área mínima: Vaso 5 L. Colheita: 90 dias. Adubo: Composto leve. Rega: 2x semana. Dica: Solo drenado.";
+            case OREGANO -> "🌿 Orégano: Área mínima: Vaso 3 L. Colheita: 60 dias. Adubo: Composto. Rega: 2x semana. Dica: Muito sol.";
+            case CAPIM_LIMAO -> "🌿 Capim-limão: Área mínima: Vaso 10 L. Colheita: 90 dias. Adubo: Composto. Rega: 3x semana. Dica: Clima quente.";
+            case AGRIAO -> "🥬 Agrião: Área mínima: Vaso 3 L. Colheita: 40 dias. Adubo: Composto. Rega: 1x dia. Dica: Gosta de umidade.";
+            case CHICORIA -> "🥬 Chicória: Área mínima: Vaso 3 L. Colheita: 50 dias. Adubo: Composto. Rega: 3x semana. Dica: Sol parcial.";
+            case NABO -> "🧅 Nabo: Área mínima: Vaso 5 L. Colheita: 50 dias. Adubo: Composto. Rega: 3x semana. Dica: Clima ameno.";
+            case QUIABO -> "🥒 Quiabo: Área mínima: 1 m². Colheita: 60 dias. Adubo: Composto. Rega: 3x semana. Dica: Calor.";
+            case AMENDOIM -> "🥜 Amendoim: Área mínima: 1 m². Colheita: 120 dias. Adubo: Composto. Rega: 3x semana. Dica: Solo solto.";
+            case GENGIBRE -> "🫚 Gengibre: Área mínima: Vaso 10 L. Colheita: 180 dias. Adubo: Composto. Rega: 3x semana. Dica: Meia sombra.";
+            case CURCUMA -> "🫚 Cúrcuma: Área mínima: Vaso 10 L. Colheita: 200 dias. Adubo: Composto. Rega: 3x semana. Dica: Solo úmido.";
+            case LOURO -> "🌿 Louro: Área mínima: Vaso 10 L. Colheita: 180 dias. Adubo: Composto. Rega: 2x semana. Dica: Cresce lento.";
+            case STEVIA -> "🌿 Stevia: Área mínima: Vaso 3 L. Colheita: 90 dias. Adubo: Composto. Rega: 3x semana. Dica: Boa luz.";
+            case MELISSA -> "🌿 Melissa: Área mínima: Vaso 3 L. Colheita: 60 dias. Adubo: Composto. Rega: 3x semana. Dica: Aromática.";
+            case SALVIA -> "🌿 Sálvia: Área mínima: Vaso 3 L. Colheita: 60 dias. Adubo: Composto. Rega: 2x semana. Dica: Solo drenado.";
+            case LAVANDA -> "🪻 Lavanda: Área mínima: Vaso 5 L. Colheita: 120 dias. Adubo: Composto leve. Rega: 2x semana. Dica: Muito sol.";
+            case MARACUJA -> "🍈 Maracujá: Área mínima: 2 m². Colheita: 120 dias. Adubo: Composto. Rega: 3x semana. Dica: Precisa suporte.";
+            case MELANCIA_MINI -> "🍉 Melancia mini: Área mínima: 2 m². Colheita: 90 dias. Adubo: Composto. Rega: 3x semana. Dica: Muito sol.";
             case OUTRA ->
                 "🌱 Espécie personalizada: aplique cuidados básicos e pesquise as necessidades específicas desta planta.";
         };
@@ -151,10 +169,20 @@ public class PlantRecommendationService {
                 || species == Species.ESPADA_DE_SAO_JORGE || species == Species.ZAMIOCULCA;
         boolean isTropical   = species == Species.JIBOIA || species == Species.SAMAMBAIA
                 || species == Species.COSTELA_DE_ADAO || species == Species.LIRIO_DA_PAZ;
-        boolean isHerb       = species == Species.CEBOLINHA || species == Species.SALSINHA
-                || species == Species.MANJERICAO || species == Species.HORTELA;
-        boolean isVegetable  = species == Species.TOMATE || species == Species.ALFACE
-                || species == Species.MORANGO || species == Species.PIMENTA;
+        boolean isHerb = species == Species.CEBOLINHA || species == Species.SALSINHA || species == Species.MANJERICAO || species == Species.HORTELA
+                || species == Species.COENTRO || species == Species.FUNCHO || species == Species.TOMILHO || species == Species.ALECRIM
+                || species == Species.OREGANO || species == Species.CAPIM_LIMAO || species == Species.LOURO || species == Species.STEVIA
+                || species == Species.MELISSA || species == Species.SALVIA || species == Species.LAVANDA;
+        
+        boolean isVegetable = species == Species.TOMATE || species == Species.ALFACE || species == Species.MORANGO || species == Species.PIMENTA
+                || species == Species.RUCULA || species == Species.ESPINAFRE || species == Species.COUVE || species == Species.TOMATE_CEREJA
+                || species == Species.PIMENTAO || species == Species.PEPINO || species == Species.ABOBRINHA || species == Species.BERINJELA
+                || species == Species.CENOURA || species == Species.BETERRABA || species == Species.RABANETE || species == Species.ALHO
+                || species == Species.CEBOLA || species == Species.ERVILHA || species == Species.FEIJAO || species == Species.FEIJAO_VAGEM
+                || species == Species.MILHO_ANAO || species == Species.BATATA || species == Species.BATATA_DOCE || species == Species.ALMEIRAO
+                || species == Species.ACELGA || species == Species.MOSTARDA || species == Species.ENDIVIA || species == Species.AGRIAO
+                || species == Species.CHICORIA || species == Species.NABO || species == Species.QUIABO || species == Species.AMENDOIM
+                || species == Species.GENGIBRE || species == Species.CURCUMA || species == Species.MARACUJA || species == Species.MELANCIA_MINI;
 
         return switch (soilType) {
             case ARENOSO -> {

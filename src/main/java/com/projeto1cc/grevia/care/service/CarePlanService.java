@@ -103,6 +103,8 @@ public class CarePlanService {
         
         return switch (frequencyType) {
             case DIARIO -> baseDate.plusDays(1);
+            case DUAS_VEZES_SEMANA -> baseDate.plusDays(3);
+            case TRES_VEZES_SEMANA -> baseDate.plusDays(2);
             case SEMANAL -> baseDate.plusWeeks(1);
             case QUINZENAL -> baseDate.plusWeeks(2);
             case MENSAL -> baseDate.plusMonths(1);

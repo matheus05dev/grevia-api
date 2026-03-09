@@ -49,16 +49,67 @@ public class SpeciesCareService {
             case TOMATE:
             case PIMENTA:
             case MORANGO:
-                cares.add(createCare(CareType.REGA, FrequencyType.DIARIO, 0)); // Common for fruiting plants in full sun
-                cares.add(createCare(CareType.ADUBACAO, FrequencyType.MENSAL, 15));
-                break;
+            case RUCULA:
+            case ESPINAFRE:
+            case TOMATE_CEREJA:
+            case PIMENTAO:
+            case PEPINO:
+            case ABOBRINHA:
+            case BERINJELA:
+            case RABANETE:
             case ALFACE:
+            case AGRIAO:
+                cares.add(createCare(CareType.REGA, FrequencyType.DIARIO, 0));
+                cares.add(createCare(CareType.ADUBACAO, FrequencyType.MENSAL, 15));
+                cares.add(createCare(CareType.PODA, FrequencyType.SOB_DEMANDA, 20)); // Harvesting
+                break;
+            case COUVE:
+            case CENOURA:
+            case BETERRABA:
+            case ALHO:
+            case CEBOLA:
+            case ERVILHA:
+            case FEIJAO:
+            case FEIJAO_VAGEM:
+            case MILHO_ANAO:
+            case BATATA:
+            case BATATA_DOCE:
+            case ALMEIRAO:
+            case ACELGA:
+            case MOSTARDA:
+            case ENDIVIA:
+            case FUNCHO:
+            case CAPIM_LIMAO:
+            case CHICORIA:
+            case NABO:
+            case QUIABO:
+            case AMENDOIM:
+            case GENGIBRE:
+            case CURCUMA:
+            case STEVIA:
+            case MELISSA:
+            case MARACUJA:
+            case MELANCIA_MINI:
             case CEBOLINHA:
             case SALSINHA:
             case MANJERICAO:
             case HORTELA:
-                cares.add(createCare(CareType.REGA, FrequencyType.DIARIO, 0));
+            case COENTRO:
+                cares.add(createCare(CareType.REGA, FrequencyType.TRES_VEZES_SEMANA, 0));
+                cares.add(createCare(CareType.ADUBACAO, FrequencyType.MENSAL, 15));
+                cares.add(createCare(CareType.PODA, FrequencyType.SOB_DEMANDA, 30));
+                break;
+            case TOMILHO:
+            case ALECRIM:
+            case OREGANO:
+            case LOURO:
+            case SALVIA:
+            case LAVANDA:
+                cares.add(createCare(CareType.REGA, FrequencyType.DUAS_VEZES_SEMANA, 0));
+                cares.add(createCare(CareType.ADUBACAO, FrequencyType.BIMESTRAL, 15));
                 cares.add(createCare(CareType.PODA, FrequencyType.SOB_DEMANDA, 20)); // Harvesting
+                break;
+            case OUTRA:
                 break;
         }
 
