@@ -17,6 +17,7 @@ public interface PlantMapper {
     Plant toEntity(PlantRequestDTO dto);
 
     @Mapping(source = "user.name", target = "ownerName")
+    @Mapping(target = "utility", expression = "java(plant.getSpecies() != null ? plant.getSpecies().getUtility() : null)")
     PlantResponseDTO toResponseDTO(Plant plant);
 
     @Mapping(target = "id", ignore = true)
