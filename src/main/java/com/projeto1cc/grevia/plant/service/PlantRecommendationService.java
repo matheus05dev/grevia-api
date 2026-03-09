@@ -8,17 +8,32 @@ import org.springframework.stereotype.Service;
 public class PlantRecommendationService {
 
     public String generateRecommendation(SoilType soilType, Species species) {
+        String utilityStr = getUtilityDisplayName(species);
         String speciesRec = getSpeciesRecommendation(species);
         String soilRec    = getSoilRecommendation(soilType);
         String combined   = getCombinedAdvice(species, soilType);
 
+        String prefix = utilityStr.isEmpty() ? "" : "💡 Uso Comum: " + utilityStr + "\n";
+
         if (species == Species.OUTRA) {
-            return speciesRec + " " + soilRec
+            return prefix + speciesRec + " " + soilRec
                     + " Como esta é uma espécie personalizada, pesquise a frequência ideal de rega e adubação"
                     + " e cadastre seus próprios planos de cuidado no aplicativo!";
         }
 
-        return speciesRec + " " + soilRec + (combined.isEmpty() ? "" : " " + combined);
+        return prefix + speciesRec + " " + soilRec + (combined.isEmpty() ? "" : " " + combined);
+    }
+
+    private String getUtilityDisplayName(Species species) {
+        if (species == null || species.getUtility() == null) return "";
+        return switch (species.getUtility()) {
+            case ORNAMENTAL -> "Ornamental / Decoração";
+            case HORTALICA_SALADA -> "Hortaliça / Salada";
+            case TEMPERO_ERVA -> "Tempero / Erva Aromática";
+            case FRUTA -> "Fruta / Fruto";
+            case LEGUME_RAIZ -> "Legume / Raiz / Tubérculo";
+            case OUTREM -> "Outros (Grãos, Leguminosas, etc)";
+        };
     }
 
     // -------------------------------------------------------------------------
