@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+
+import com.projeto1cc.grevia.core.auth.dto.ForgotPasswordRequestDTO;
+import com.projeto1cc.grevia.core.auth.dto.ResetPasswordRequestDTO;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,5 +48,17 @@ public class AuthRestController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
         final String jwt = jwtService.generateToken(userDetails);
         return ResponseEntity.ok(new LoginResponseDTO(jwt));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDTO request) {
+        userService.requestPasswordReset(request.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO request) {
+        userService.resetPassword(request.token(), request.newPassword());
+        return ResponseEntity.ok().build();
     }
 }
