@@ -46,6 +46,10 @@ public class User implements UserDetails {
     @Column(name = "total_points")
     private Integer totalPoints = 0;
 
+    private String resetPasswordToken;
+
+    private java.time.LocalDateTime resetPasswordTokenExpiry;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

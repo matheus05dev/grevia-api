@@ -8,6 +8,7 @@ import com.projeto1cc.grevia.user.model.User;
 import com.projeto1cc.grevia.user.model.enums.Role;
 import com.projeto1cc.grevia.user.model.enums.Status;
 import com.projeto1cc.grevia.user.repository.UserRepository;
+import com.projeto1cc.grevia.core.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
@@ -87,24 +89,32 @@ public class UserService {
 
     @Transactional
     public void requestPasswordReset(String email) {
-        // Lógica para gerar um token de reset, salvar no banco e enviar por e-mail
-        // Ex:
-        // 1. Encontrar o usuário pelo e-mail.
-        // 2. Gerar um token único e com tempo de expiração.
-        // 3. Salvar o token associado ao usuário.
-        // 4. Enviar um e-mail para o usuário com o link de reset contendo o token.
-        System.out.println("Solicitação de reset de senha para: " + email);
+        userRepository.findByEmail(email).ifPresent(user -> {
+            String token = java.util.UUID.randomUUID().toString();
+            user.setResetPasswordToken(token);
+            user.setResetPasswordTokenExpiry(java.time.LocalDateTime.now().plusHours(1));
+            userRepository.save(user);
+            emailService.sendPasswordResetEmail(user.getEmail(), token);
+            System.out.println("E-mail de recuperação enviado para: " + email);
+        });
     }
 
     @Transactional
     public void resetPassword(String token, String newPassword) {
-        // Lógica para validar o token e redefinir a senha
-        // Ex:
-        // 1. Encontrar o usuário associado ao token.
-        // 2. Verificar se o token é válido e não expirou.
-        // 3. Criptografar e atualizar a nova senha.
-        // 4. Invalidar o token.
-        System.out.println("Redefinindo senha com o token: " + token);
+        userRepository.findByResetPasswordToken(token).ifPresentOrElse(user -> {
+            if (user.getResetPasswordTokenExpiry() != null &&
+                user.getResetPasswordTokenExpiry().isAfter(java.time.LocalDateTime.now())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                user.setResetPasswordToken(null);
+                user.setResetPasswordTokenExpiry(null);
+                userRepository.save(user);
+                System.out.println("Senha redefinida com sucesso para o token: " + token);
+            } else {
+                throw new IllegalArgumentException("Token de recuperação de senha inválido ou expirado.");
+            }
+        }, () -> {
+            throw new IllegalArgumentException("Token de recuperação de senha inválido ou expirado.");
+        });
     }
 
     @Transactional
