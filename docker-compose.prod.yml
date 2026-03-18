@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Container do Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: grevia-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=greviadb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+    restart: unless-stopped
+
+  # Container da API (Spring Boot)
+  api:
+    build: .
+    container_name: grevia-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Sobrescreve a URL do banco (Spring) para apontar para o container do DB na rede bridge do docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/greviadb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=admin
+      
+      # Variáveis do Serviço de Email (Injetadas da VM via arquivo .env ou export)
+      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT:-587}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME:-seu_email}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD:-sua_senha}
+      
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  mysql_data_prod:
