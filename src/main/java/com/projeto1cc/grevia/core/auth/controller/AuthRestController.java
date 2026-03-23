@@ -39,13 +39,14 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
-        authenticationManager.authenticate(
+        org.springframework.security.core.Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
                         request.password()
                 )
         );
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(authentication);
+        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         final String jwt = jwtService.generateToken(userDetails);
         return ResponseEntity.ok(new LoginResponseDTO(jwt));
     }

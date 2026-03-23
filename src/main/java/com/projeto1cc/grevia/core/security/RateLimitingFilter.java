@@ -28,10 +28,10 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private final ConcurrentHashMap<String, Bucket> authBuckets    = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Bucket> generalBuckets = new ConcurrentHashMap<>();
 
-    // 5 tokens refilled every 15 minutes — auth endpoints (brute-force / credential-stuffing protection)
+    // 10 tokens refilled every 15 minutes — auth endpoints (brute-force / credential-stuffing protection)
     // interval refill = tokens are added at a constant rate, not all at once, preventing burst exploitation
     private Bucket newAuthBucket() {
-        Bandwidth limit = Bandwidth.classic(5, Refill.intervally(5, Duration.ofMinutes(15)));
+        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(15)));
         return Bucket.builder().addLimit(limit).build();
     }
 
@@ -63,6 +63,11 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         if (bucket.tryConsume(1)) {
             filterChain.doFilter(request, response);
+            
+            // Se o login for bem-sucedido, reseta o rate limit de autenticação para esse IP
+            if ("/api/auth/login".equals(path) && response.getStatus() == HttpStatus.OK.value()) {
+                authBuckets.remove(ip);
+            }
         } else {
             response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             response.setContentType("application/json;charset=UTF-8");
