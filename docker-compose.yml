@@ -21,5 +21,19 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MYSQLHOST=db
+      - MYSQLPORT=3306
+      - MYSQLDATABASE=greviadb
+      - MYSQLUSER=user
+      - MYSQLPASSWORD=admin
+
 volumes:
   mysql_data:
