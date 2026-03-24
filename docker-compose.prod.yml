@@ -8,10 +8,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=greviadb
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=admin
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=${DB_NAME:-greviadb}
+      - MYSQL_USER=${DB_USER:-grevia_user}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -37,9 +37,9 @@ services:
         condition: service_healthy
     environment:
       # Sobrescreve a URL do banco (Spring) para apontar para o container do DB na rede bridge do docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/greviadb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${DB_NAME:-greviadb}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-grevia_user}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       
       # Variáveis do Serviço de Email (Injetadas da VM via arquivo .env ou export)
       - SPRING_MAIL_HOST=${SPRING_MAIL_HOST:-smtp.gmail.com}
