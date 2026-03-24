@@ -34,7 +34,7 @@ public class SpringDocConfig {
                         .version("v1.0.0")
                         .contact(new Contact()
                                 .name("Time Grevia")
-                                .email("contactgrevia@gtmail.com"))
+                                .email("contactgrevia@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("http://springdoc.org")));
