@@ -11,11 +11,13 @@ import com.projeto1cc.grevia.user.repository.UserRepository;
 import com.projeto1cc.grevia.core.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -32,6 +34,7 @@ public class UserService {
         user.setStatus(Status.Active);
         user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
+        log.info("Novo usuário registrado com sucesso: {}", savedUser.getEmail());
         return userMapper.toUserResponseDTO(savedUser);
     }
 
@@ -42,6 +45,7 @@ public class UserService {
             user.setEmail(userRequestDTO.email());
             if (userRequestDTO.password() != null && !userRequestDTO.password().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
+                log.info("Senha alterada para o usuário: {}", user.getEmail());
             }
             // Role is NOT updated here for security reasons
             User updatedUser = userRepository.save(user);
@@ -73,6 +77,7 @@ public class UserService {
             user.setName(dto.name());
             if (dto.password() != null && !dto.password().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(dto.password()));
+                log.info("Senha alterada para o usuário via e-mail: {}", user.getEmail());
             }
             User updatedUser = userRepository.save(user);
             return userMapper.toUserResponseDTO(updatedUser);
@@ -95,7 +100,7 @@ public class UserService {
             user.setResetPasswordTokenExpiry(java.time.LocalDateTime.now().plusHours(1));
             userRepository.save(user);
             emailService.sendPasswordResetEmail(user.getEmail(), token);
-            System.out.println("E-mail de recuperação enviado para: " + email);
+            log.info("E-mail de recuperação de senha enviado com sucesso para: {}", email);
         });
     }
 
@@ -108,11 +113,13 @@ public class UserService {
                 user.setResetPasswordToken(null);
                 user.setResetPasswordTokenExpiry(null);
                 userRepository.save(user);
-                System.out.println("Senha redefinida com sucesso para o token: " + token);
+                log.info("Senha redefinida com sucesso utilizando o token: {}", token);
             } else {
+                log.warn("Tentativa falha de redefinição: Token de recuperação expirado ({})", token);
                 throw new IllegalArgumentException("Token de recuperação de senha inválido ou expirado.");
             }
         }, () -> {
+            log.warn("Tentativa falha de redefinição: Token de recuperação inválido ({})", token);
             throw new IllegalArgumentException("Token de recuperação de senha inválido ou expirado.");
         });
     }
