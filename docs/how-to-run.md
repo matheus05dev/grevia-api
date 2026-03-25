@@ -1,56 +1,110 @@
-# Guia de Execução Local - Grevia API
+# Guia de Execução Local — Grevia API
 
-Este guia ensina como executar, debugar e testar o projeto localmente.
+Passo a passo para rodar o banco de dados e a API no seu computador.
+
+---
 
 ## 🛠️ Pré-requisitos
-Antes de começar, certifique-se de ter os seguintes itens na sua máquina:
-1. **Java Development Kit (JDK) 21**. [Download (Temurin / Adoptium)](https://adoptium.net/temurin/releases?version=21).
-2. **Docker e Docker Compose**, para rodar o banco de dados via container sem precisar instalar banco fixamente.
-3. *(Opcional, porém recomendado)* Uma IDE especializada para Java (IntelliJ IDEA, VS Code com Packs da Spring, Eclipse).
 
-## 🐳 Passo 1: Configurando o Banco de Dados
+| Requisito | Versão | Link |
+|---|---|---|
+| Java JDK | 21 | [Download (Temurin)](https://adoptium.net/temurin/releases?version=21) |
+| Docker + Docker Compose | Recente | [Download](https://www.docker.com/products/docker-desktop/) |
+| IDE *(opcional)* | — | IntelliJ IDEA, VS Code ou Eclipse |
 
-A API armazena seus dados em uma instância do MySQL. 
+> **Nota:** Não é necessário instalar o Maven — o projeto inclui o Maven Wrapper (`mvnw`).
 
-1. Abra um terminal na pasta raiz do projeto de sua gerência.
-2. Inicie os contêineres:
-   ```bash
-   docker-compose up -d
-   ```
-*(Alternativa Exclusiva para Windows: A raiz do projeto conta com os utilitários de sistema `Startardbs.bat`. Esse script irá iniciar as execuções do daemon do Docker se houver necessidade na máquina a tempo do Boot).*
+---
 
-## 🏃 Passo 2: Executando a API 
+## 🐳 Passo 1: Subindo o Banco de Dados
 
-Com o **Maven Wrapper (`mvnw`)** acoplado ao projeto, não vamos precisar instalar o "Maven" local.
+A API utiliza MySQL 8.0 via Docker. Abra um terminal na raiz do projeto e execute:
 
-Abra o respectivo terminal (por exemplo, Powershell no Windows, ou Konsole/Zsh no Linux) e execute:
-
-**No Linux / macOS**:
 ```bash
-./mvnw spring-boot:run
+docker-compose up -d
 ```
 
-**No Windows**:
+Isso irá:
+- Baixar a imagem do MySQL 8.0 (na primeira vez)
+- Criar o banco `greviadb` automaticamente
+- Expor na porta `3306`
+
+Para verificar se está rodando:
+```bash
+docker-compose ps
+```
+
+---
+
+## ⚙️ Passo 2: Variáveis de Ambiente
+
+A aplicação utiliza variáveis de ambiente para serviços externos. Para **desenvolvimento local**, os valores default do `application.properties` funcionam para o banco de dados.
+
+Para funcionalidades de **e-mail** e **upload de imagens**, configure as variáveis abaixo (via variáveis de ambiente ou no `application.properties`):
+
+| Variável | Descrição | Obrigatória no Dev? |
+|---|---|---|
+| `SPRING_MAIL_USERNAME` | E-mail para envio (Gmail) | Só se testar e-mail |
+| `SPRING_MAIL_PASSWORD` | Senha de App do Gmail | Só se testar e-mail |
+| `RESEND_API_KEY` | Chave da API do Resend | Só se testar e-mail |
+| `CLOUDINARY_CLOUD_NAME` | Nome do cloud Cloudinary | Só se testar upload |
+| `CLOUDINARY_API_KEY` | API key do Cloudinary | Só se testar upload |
+| `CLOUDINARY_API_SECRET` | API secret do Cloudinary | Só se testar upload |
+
+---
+
+## 🏃 Passo 3: Executando a API
+
+**No Windows (PowerShell):**
 ```bash
 .\mvnw.cmd spring-boot:run
 ```
 
-O ambiente será iniciado (normalmente exposto na porta padrão `8080`), fazendo varreduras e criando dependências.
+**No Linux / macOS:**
+```bash
+./mvnw spring-boot:run
+```
 
-## 📚 Passo 3: Conheça os Endpoints Com Swagger UI
+Aguarde até ver a mensagem:
+```
+Started GreviaApplication in X seconds
+```
 
-Ao receber na tela informando a conclusão positiva (`Tomcat started on port 8080` ou semelhante), você pode navegar até:
+A API estará disponível em **http://localhost:8080**.
 
-**[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)** *(Verifique as prop-files caso altere de porta)*
+---
 
-Lá haverá uma tela visual para debugar as rotas (OpenAPI):
-- Primeiro execute um `/api/auth/register` criando os credenciamentos da sua conta.
-- Faça o Login para pegar o Access Token e coloque ali onde avisa "Authorize" para ser fixado global.
-- Use do ambiente livremente.
+## 📚 Passo 4: Acessando o Swagger UI
 
-## 🛑 Como parar a Execução
-- Para a aplicação Spring: De forma clássica o `Ctrl + C` encerrará o processo de Thread anexado.
-- Para matar as instâncias do Docker, desative o compose com:
-  ```bash
-  docker-compose down
-  ```
+Com a API rodando, abra no navegador:
+
+👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+
+### Primeiros passos no Swagger:
+
+1. Execute `POST /api/auth/register` para criar sua conta
+2. Execute `POST /api/auth/login` para obter o token JWT
+3. Clique em **"Authorize"** (cadeado no topo) e cole: `Bearer <seu-token>`
+4. Use os demais endpoints normalmente
+
+---
+
+## 🐳 Alternativa: Rodar Tudo com Docker
+
+Se não quiser instalar o Java, rode a API inteira via Docker Compose:
+
+```bash
+docker-compose up -d --build
+```
+
+Isso irá buildar a API dentro de um container Maven e executar com JRE Alpine.
+
+---
+
+## 🛑 Parando os Serviços
+
+| Ação | Comando |
+|---|---|
+| Parar a API (terminal) | `Ctrl + C` |
+| Parar containers Docker | `docker-compose down` |
+| Parar e remover volumes | `docker-compose down -v` |

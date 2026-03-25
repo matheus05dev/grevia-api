@@ -1,64 +1,131 @@
-# Guia de Deploy - Oracle VM (OCI) / Ubuntu
+# Guia de Deploy — Oracle Cloud (OCI) / Ubuntu
 
-Este guia explica como colocar a sua API do Grevia online usando Docker num servidor vazio (como os gratuitos da Oracle Cloud).
+Como colocar a Grevia API online usando Docker em um servidor Ubuntu (como os gratuitos da Oracle Cloud).
 
-## Pré-requisitos na VM
+---
 
-1. Acesse sua VM via SSH.
-2. Atualize o sistema: `sudo apt update && sudo apt upgrade -y`
-3. Instale o Docker e Docker Compose:
+## 🛠️ Pré-requisitos na VM
+
+1. Acesse sua VM via SSH
+2. Atualize o sistema:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   ```
+3. Instale Docker e Docker Compose:
    ```bash
    sudo apt install docker.io docker-compose -y
    sudo systemctl enable docker
    sudo systemctl start docker
    sudo usermod -aG docker $USER
    ```
-   *Dica: Feche a conexão SSH e entre de novo para o `usermod` fazer efeito sem precisar de sudo no docker.*
+   > **Dica:** Desconecte e reconecte o SSH para o grupo `docker` fazer efeito.
 
-## 1. Prepare o Repositório
+---
 
-Faça o clone do seu projeto para a VM:
+## 1. Clone o Repositório
+
 ```bash
 git clone https://github.com/SeuUsuario/GreviaAPI.git
 cd GreviaAPI
 ```
 
+---
+
 ## 2. Configure as Variáveis de Ambiente
 
-Crie um arquivo chamado `.env` na raiz do projeto dentro da VM para não expor senhas no repositório:
+Crie o arquivo `.env` na raiz do projeto:
+
 ```bash
 nano .env
 ```
 
-Cole o seguinte conteúdo (ajustando com suas senhas reais):
+Cole o seguinte conteúdo (substituindo pelos valores reais):
+
 ```env
+# Banco de Dados
+DB_NAME=greviadb
+DB_USER=grevia_user
+DB_PASSWORD=sua_senha_do_banco
+DB_ROOT_PASSWORD=sua_senha_root
+
+# E-mail (Gmail)
 SPRING_MAIL_HOST=smtp.gmail.com
 SPRING_MAIL_PORT=587
 SPRING_MAIL_USERNAME=contactgrevia@gmail.com
-SPRING_MAIL_PASSWORD=sua_senha_de_app_gerada_no_google
+SPRING_MAIL_PASSWORD=sua_senha_de_app_do_google
+
+# Resend (E-mail transacional)
+RESEND_API_KEY=re_SuaChaveAqui
+
+# Cloudinary (Upload de imagens)
+CLOUDINARY_CLOUD_NAME=seu_cloud_name
+CLOUDINARY_API_KEY=sua_api_key
+CLOUDINARY_API_SECRET=seu_api_secret
 ```
-Salve e saia (`CTRL+O`, `Enter`, `CTRL+X`). O `docker-compose` lê esse arquivo automaticamente!
 
-## 3. Subir a Aplicação
+Salve e saia (`CTRL+O` → `Enter` → `CTRL+X`).
 
-Rode o comando mágico abaixo para construir a imagem do Spring Boot usando o nosso `Dockerfile` de Multi-Stage (super leve e não precisa de Java instalado na VM!) e subir tudo orquestrado:
+> **Importante:** O `docker-compose.prod.yml` lê esse `.env` automaticamente.
+
+---
+
+## 3. Suba a Aplicação
 
 ```bash
 docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
-**O que vai acontecer?**
-- O Banco de Dados (MySQL) vai iniciar e criar o schema `greviadb`.
-- O Maven vai baixar as dependências e empacotar sua API dentro do container de _build_.
-- O Spring Boot vai iniciar em seguida, conectando-se automaticamente ao banco.
+**O que vai acontecer:**
+1. O MySQL inicia e cria o schema `greviadb`
+2. O Maven baixa dependências e empacota a API (multi-stage build)
+3. O Spring Boot inicia e conecta ao banco automaticamente
 
-## 4. Como Conferir se Está Funcionando
+---
 
-Veja os logs da API em tempo real:
+## 4. Verificando o Funcionamento
+
+Acompanhe os logs em tempo real:
+
 ```bash
 docker logs -f grevia-api
 ```
 
-Se aparecer "Started DemoApplication in X seconds", sua API já está acessível pela porta 8080 do IP público da sua VM! 🚀
+Se aparecer `Started GreviaApplication in X seconds`, a API está acessível na porta **8080** do IP público da VM. 🚀
 
-> **Aviso da Oracle Cloud (OCI):** Não se esqueça de ir no painel Web da Oracle Cloud (VCN > Subnets > Security Lists) e liberar o "Ingress Rule" para abrir a porta **8080** no firewall, senão as requisições não chegam. Se estiver usando Iptables no Ubuntu, também precisa liberar lá: `sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8080 -j ACCEPT` e `sudo netfilter-persistent save`.
+### Testando:
+
+```bash
+curl http://localhost:8080/actuator/health
+# Deve retornar: {"status":"UP", ...}
+```
+
+---
+
+## 5. Liberando a Porta (Firewall)
+
+### Oracle Cloud (OCI)
+
+Vá no painel Web: **VCN → Subnets → Security Lists** → Adicione uma **Ingress Rule**:
+- **Source CIDR:** `0.0.0.0/0`
+- **Protocol:** TCP
+- **Destination Port:** `8080`
+
+### Firewall do Ubuntu (iptables)
+
+```bash
+sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8080 -j ACCEPT
+sudo netfilter-persistent save
+```
+
+---
+
+## 6. Comandos Úteis
+
+| Ação | Comando |
+|---|---|
+| Ver logs | `docker logs -f grevia-api` |
+| Parar tudo | `docker-compose -f docker-compose.prod.yml down` |
+| Reiniciar | `docker-compose -f docker-compose.prod.yml restart` |
+| Rebuild e subir | `docker-compose -f docker-compose.prod.yml up -d --build` |
+| Ver containers | `docker ps` |
+| Ver uso de disco | `docker system df` |
