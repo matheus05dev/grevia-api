@@ -2,8 +2,8 @@ package com.projeto1cc.grevia.core.service;
 
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.SendEmailRequest;
-import com.resend.services.emails.model.SendEmailResponse;
+import com.resend.services.emails.model.CreateEmailOptions;
+import com.resend.services.emails.model.CreateEmailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class EmailService {
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         Resend resend = new Resend(resendApiKey);
 
-        SendEmailRequest sendEmailRequest = SendEmailRequest.builder()
+        CreateEmailOptions sendEmailRequest = CreateEmailOptions.builder()
                 .from(fromEmail)
                 .to(toEmail)
                 .subject("Grevia API - Recuperação de Senha")
@@ -36,7 +36,7 @@ public class EmailService {
 
         try {
             log.info("Tentando enviar e-mail de recuperação via Resend API para: {}", toEmail);
-            SendEmailResponse data = resend.emails().send(sendEmailRequest);
+            CreateEmailResponse data = resend.emails().send(sendEmailRequest);
             log.info("E-mail de recuperação enviado com sucesso via Resend (ID: {})", data.getId());
         } catch (ResendException e) {
             log.error("Erro ao enviar e-mail de recuperação via Resend para {}: {}", toEmail, e.getMessage(), e);
