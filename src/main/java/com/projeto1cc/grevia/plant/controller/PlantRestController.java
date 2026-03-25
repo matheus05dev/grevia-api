@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.projeto1cc.grevia.core.storage.FileStorageService;
 
 import java.util.List;
 
@@ -23,8 +22,6 @@ import java.util.List;
 public class PlantRestController {
 
     private final PlantService plantService;
-    private final FileStorageService fileStorageService;
-
     @PostMapping
     public ResponseEntity<PlantResponseDTO> createPlant(@Valid @RequestBody PlantRequestDTO requestDTO) {
         return ResponseEntity.ok(plantService.createPlant(requestDTO, getAuthenticatedUserEmail()));
@@ -59,23 +56,6 @@ public class PlantRestController {
     @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PlantResponseDTO> uploadPlantImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(plantService.uploadPlantImage(id, file, getAuthenticatedUserEmail()));
-    }
-
-    // Example endpoint to serve the uploaded image
-    @GetMapping("/images/{fileName:.+}")
-    public ResponseEntity<Resource> getPlantImage(@PathVariable String fileName) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
-        
-        // Try to determine file's content type
-        String contentType = "application/octet-stream";
-        if (fileName.toLowerCase().endsWith(".png")) contentType = "image/png";
-        else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) contentType = "image/jpeg";
-        else if (fileName.toLowerCase().endsWith(".gif")) contentType = "image/gif";
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
     }
 
     private String getAuthenticatedUserEmail() {

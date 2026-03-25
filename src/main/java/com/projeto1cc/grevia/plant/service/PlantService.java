@@ -5,7 +5,7 @@ import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
 import com.projeto1cc.grevia.plant.mapper.PlantMapper;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
-import com.projeto1cc.grevia.core.storage.FileStorageService;
+import com.projeto1cc.grevia.core.service.CloudinaryService;
 import com.projeto1cc.grevia.care.service.CarePlanService;
 import com.projeto1cc.grevia.care.service.SpeciesCareService;
 import com.projeto1cc.grevia.care.dto.CarePlanRequestDTO;
@@ -29,8 +29,7 @@ public class PlantService {
     private final PlantRecommendationService recommendationService;
     private final SpeciesCareService speciesCareService;
     private final CarePlanService carePlanService;
-    // Removing the commented line
-    private final FileStorageService fileStorageService;
+    private final CloudinaryService cloudinaryService;
 
     @Transactional
     public PlantResponseDTO createPlant(PlantRequestDTO requestDTO, String userEmail) {
@@ -120,8 +119,13 @@ public class PlantService {
             throw new RuntimeException("Você não tem permissão para atualizar esta planta");
         }
 
-        String fileName = fileStorageService.storeFile(file);
-        plant.setImagePath(fileName);
+        try {
+            String imageUrl = cloudinaryService.uploadImage(file);
+            plant.setImagePath(imageUrl);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Erro ao fazer upload da imagem para o Cloudinary", e);
+        }
+        
         Plant updatedPlant = plantRepository.save(plant);
         
         return plantMapper.toResponseDTO(updatedPlant);
