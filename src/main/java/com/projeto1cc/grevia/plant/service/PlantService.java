@@ -5,7 +5,8 @@ import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
 import com.projeto1cc.grevia.plant.mapper.PlantMapper;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
-import com.projeto1cc.grevia.core.service.CloudinaryService;
+import com.projeto1cc.grevia.care.model.CarePlan;
+import com.projeto1cc.grevia.care.repository.CarePlanRepository;
 import com.projeto1cc.grevia.care.service.CarePlanService;
 import com.projeto1cc.grevia.care.service.SpeciesCareService;
 import com.projeto1cc.grevia.care.dto.CarePlanRequestDTO;
@@ -14,7 +15,6 @@ import com.projeto1cc.grevia.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +29,7 @@ public class PlantService {
     private final PlantRecommendationService recommendationService;
     private final SpeciesCareService speciesCareService;
     private final CarePlanService carePlanService;
-    private final CloudinaryService cloudinaryService;
+    private final CarePlanRepository carePlanRepository;
 
     @Transactional
     public PlantResponseDTO createPlant(PlantRequestDTO requestDTO, String userEmail) {
@@ -42,11 +42,17 @@ public class PlantService {
 
         Plant savedPlant = plantRepository.save(plant);
 
-        // Auto-generate care plans based on species
+        // Auto-generate care plans based on species (single batch INSERT)
         List<CarePlanRequestDTO> defaultCares = speciesCareService.getDefaultCaresForSpecies(savedPlant.getSpecies());
-        for (CarePlanRequestDTO careRequest : defaultCares) {
-            carePlanService.createCarePlan(savedPlant.getId(), careRequest, userEmail);
-        }
+        List<CarePlan> carePlans = defaultCares.stream().map(careRequest -> {
+            CarePlan carePlan = new CarePlan();
+            carePlan.setCareType(careRequest.careType());
+            carePlan.setFrequencyType(careRequest.frequencyType());
+            carePlan.setNextCareDate(careRequest.startDate() != null ? careRequest.startDate() : java.time.LocalDate.now());
+            carePlan.setPlant(savedPlant);
+            return carePlan;
+        }).collect(Collectors.toList());
+        carePlanRepository.saveAll(carePlans);
 
         return plantMapper.toResponseDTO(savedPlant);
     }

@@ -15,5 +15,6 @@ public interface SpeciesSuggestionMapper {
     SpeciesSuggestion toEntity(SpeciesSuggestionRequestDTO dto);
 
     @Mapping(source = "submittedBy.id", target = "submittedById")
+    @Mapping(source = "submittedBy.name", target = "submittedByName")
     SpeciesSuggestionResponseDTO toResponseDTO(SpeciesSuggestion suggestion);
 }

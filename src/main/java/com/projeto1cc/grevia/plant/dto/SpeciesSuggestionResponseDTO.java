@@ -8,5 +8,6 @@ public record SpeciesSuggestionResponseDTO(
     String suggestedName,
     String description,
     Long submittedById,
+    String submittedByName,
     LocalDateTime submittedAt
 ) {}
