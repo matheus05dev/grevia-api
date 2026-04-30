@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,10 +52,7 @@ public class PlantRestController {
         return ResponseEntity.ok(plantService.getFeed());
     }
 
-    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PlantResponseDTO> uploadPlantImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(plantService.uploadPlantImage(id, file, getAuthenticatedUserEmail()));
-    }
+
 
     private String getAuthenticatedUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

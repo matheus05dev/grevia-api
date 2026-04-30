@@ -6,6 +6,7 @@ import com.projeto1cc.grevia.care.dto.CarePlanResponseDTO;
 import com.projeto1cc.grevia.care.enums.FrequencyType;
 import com.projeto1cc.grevia.care.mapper.CarePlanMapper;
 import com.projeto1cc.grevia.care.repository.CarePlanRepository;
+import com.projeto1cc.grevia.care.repository.CareRecordRepository;
 import com.projeto1cc.grevia.plant.model.Plant;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class CarePlanService {
 
     private final CarePlanRepository carePlanRepository;
     private final PlantRepository plantRepository;
+    private final CareRecordRepository careRecordRepository;
     private final CarePlanMapper carePlanMapper;
 
     @Transactional
@@ -96,6 +98,34 @@ public class CarePlanService {
         }
 
         carePlanRepository.delete(carePlan);
+    }
+
+    @Transactional
+    public CarePlanResponseDTO completeCarePlan(Long plantId, Long careId, String notes, String userEmail) {
+        CarePlan carePlan = carePlanRepository.findById(careId)
+                .orElseThrow(() -> new RuntimeException("Plano de cuidado não encontrado"));
+
+        if (!carePlan.getPlant().getId().equals(plantId)) {
+            throw new RuntimeException("O plano de cuidado não pertence a planta especificada");
+        }
+
+        if (!carePlan.getPlant().getUser().getEmail().equals(userEmail)) {
+            throw new RuntimeException("Você não tem permissão para gerenciar esse plano de cuidado");
+        }
+
+        // Create the record
+        com.projeto1cc.grevia.care.model.CareRecord record = new com.projeto1cc.grevia.care.model.CareRecord();
+        record.setCarePlan(carePlan);
+        record.setCareDate(LocalDate.now());
+        record.setNotes(notes);
+        careRecordRepository.save(record);
+
+        // Update the plan
+        carePlan.setLastCareDate(LocalDate.now());
+        carePlan.setNextCareDate(calculateNextDate(LocalDate.now(), carePlan.getFrequencyType()));
+        
+        CarePlan updatedPlan = carePlanRepository.save(carePlan);
+        return carePlanMapper.toResponseDTO(updatedPlan);
     }
 
     public LocalDate calculateNextDate(LocalDate baseDate, FrequencyType frequencyType) {

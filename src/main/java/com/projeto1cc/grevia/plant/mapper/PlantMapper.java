@@ -11,7 +11,6 @@ import org.mapstruct.MappingTarget;
 public interface PlantMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imagePath", ignore = true)
     @Mapping(target = "recommendations", ignore = true)
     @Mapping(target = "user", ignore = true)
     Plant toEntity(PlantRequestDTO dto);
@@ -21,7 +20,6 @@ public interface PlantMapper {
     PlantResponseDTO toResponseDTO(Plant plant);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imagePath", ignore = true)
     @Mapping(target = "recommendations", ignore = true)
     @Mapping(target = "user", ignore = true)
     void updateEntityFromDto(PlantRequestDTO dto, @MappingTarget Plant plant);

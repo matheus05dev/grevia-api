@@ -11,5 +11,6 @@ public record CarePlanResponseDTO(
     CareType careType,
     FrequencyType frequencyType,
     LocalDate nextCareDate,
+    LocalDate lastCareDate,
     Long plantId
 ) {}

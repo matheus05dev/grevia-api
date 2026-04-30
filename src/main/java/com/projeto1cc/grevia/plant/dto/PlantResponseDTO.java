@@ -12,7 +12,6 @@ public record PlantResponseDTO(
     String customSpeciesName,
     String recommendations,
     SoilType soilType,
-    String imagePath,
     String ownerName,
     PlantUtility utility
 ) {}

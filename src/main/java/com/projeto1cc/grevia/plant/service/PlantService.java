@@ -110,24 +110,4 @@ public class PlantService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public PlantResponseDTO uploadPlantImage(Long plantId, MultipartFile file, String userEmail) {
-        Plant plant = plantRepository.findById(plantId)
-                .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
-
-        if (!plant.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Você não tem permissão para atualizar esta planta");
-        }
-
-        try {
-            String imageUrl = cloudinaryService.uploadImage(file);
-            plant.setImagePath(imageUrl);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException("Erro ao fazer upload da imagem para o Cloudinary", e);
-        }
-        
-        Plant updatedPlant = plantRepository.save(plant);
-        
-        return plantMapper.toResponseDTO(updatedPlant);
-    }
 }

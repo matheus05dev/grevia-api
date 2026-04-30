@@ -47,6 +47,14 @@ public class CarePlanRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{careId}/complete")
+    public ResponseEntity<CarePlanResponseDTO> completeCarePlan(
+            @PathVariable Long plantId,
+            @PathVariable Long careId,
+            @RequestBody(required = false) String notes) {
+        return ResponseEntity.ok(carePlanService.completeCarePlan(plantId, careId, notes, getAuthenticatedUserEmail()));
+    }
+
     private String getAuthenticatedUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

@@ -12,6 +12,7 @@ public interface CarePlanMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "nextCareDate", ignore = true)
+    @Mapping(target = "lastCareDate", ignore = true)
     @Mapping(target = "plant", ignore = true)
     CarePlan toEntity(CarePlanRequestDTO dto);
 
@@ -20,6 +21,7 @@ public interface CarePlanMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "nextCareDate", ignore = true)
+    @Mapping(target = "lastCareDate", ignore = true)
     @Mapping(target = "plant", ignore = true)
     void updateEntityFromDto(CarePlanRequestDTO dto, @MappingTarget CarePlan carePlan);
 }
