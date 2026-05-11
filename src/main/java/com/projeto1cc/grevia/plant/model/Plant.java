@@ -35,4 +35,7 @@ public class Plant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<com.projeto1cc.grevia.care.model.CarePlan> carePlans = new java.util.ArrayList<>();
 }

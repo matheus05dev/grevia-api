@@ -36,4 +36,7 @@ public class CarePlan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id", nullable = false)
     private Plant plant;
+
+    @OneToMany(mappedBy = "carePlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<CareRecord> careRecords = new java.util.ArrayList<>();
 }

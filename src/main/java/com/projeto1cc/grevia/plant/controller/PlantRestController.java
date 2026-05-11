@@ -13,7 +13,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.projeto1cc.grevia.plant.dto.SpeciesDTO;
+import com.projeto1cc.grevia.plant.enums.Species;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/plants")
@@ -50,6 +54,34 @@ public class PlantRestController {
     @GetMapping("/feed")
     public ResponseEntity<List<PlantResponseDTO>> getFeed() {
         return ResponseEntity.ok(plantService.getFeed());
+    }
+
+    @GetMapping("/species")
+    public ResponseEntity<List<SpeciesDTO>> getAllSpecies() {
+        return ResponseEntity.ok(Arrays.stream(Species.values())
+                .map(s -> new SpeciesDTO(
+                        s.name(),
+                        formatSpeciesName(s.name()),
+                        s.getUtility().name()
+                ))
+                .collect(Collectors.toList()));
+    }
+
+    private String formatSpeciesName(String name) {
+        if (name == null || name.isEmpty()) return "";
+        String lowerCase = name.replace("_", " ").toLowerCase();
+        String[] words = lowerCase.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 0) {
+                if (word.equals("de") || word.equals("da") || word.equals("do")) {
+                    sb.append(word).append(" ");
+                } else {
+                    sb.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1)).append(" ");
+                }
+            }
+        }
+        return sb.toString().trim();
     }
 
 
