@@ -29,6 +29,9 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+        if (userRepository.findByEmail(userRequestDTO.email()).isPresent()) {
+            throw new IllegalArgumentException("Não é possível criar a conta com este e-mail.");
+        }
         User user = userMapper.toUser(userRequestDTO);
         user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
         user.setStatus(Status.Active);
@@ -41,6 +44,10 @@ public class UserService {
     @Transactional
     public Optional<UserResponseDTO> updateUser(Long id, UserRequestDTO userRequestDTO) {
         return userRepository.findById(id).map(user -> {
+            if (!user.getEmail().equals(userRequestDTO.email()) &&
+                userRepository.findByEmail(userRequestDTO.email()).isPresent()) {
+                throw new IllegalArgumentException("Não é possível criar a conta com este e-mail.");
+            }
             user.setName(userRequestDTO.name());
             user.setEmail(userRequestDTO.email());
             if (userRequestDTO.password() != null && !userRequestDTO.password().isEmpty()) {

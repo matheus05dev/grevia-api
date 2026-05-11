@@ -70,6 +70,18 @@ class UserServiceTest {
     }
 
     @Test
+    void createUser_ShouldThrowExceptionWhenEmailAlreadyExists() {
+        when(userRepository.findByEmail(userRequestDTO.email())).thenReturn(Optional.of(user));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.createUser(userRequestDTO);
+        });
+
+        assertEquals("Não é possível criar a conta com este e-mail.", exception.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void requestPasswordReset_ShouldGenerateTokenAndSendEmail() {
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
 
