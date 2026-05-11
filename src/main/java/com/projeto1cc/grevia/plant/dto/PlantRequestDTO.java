@@ -10,5 +10,8 @@ public record PlantRequestDTO(
     @NotBlank(message = "O nome da planta é obrigatório") String name,
     @NotNull(message = "O tipo de espécie é obrigatório") Species species,
     String customSpeciesName,
-    @NotNull(message = "O tipo de solo é obrigatório") SoilType soilType
+    @NotNull(message = "O tipo de solo é obrigatório") SoilType soilType,
+    String spaceType,
+    String spaceSize,
+    Integer sunHours
 ) {}

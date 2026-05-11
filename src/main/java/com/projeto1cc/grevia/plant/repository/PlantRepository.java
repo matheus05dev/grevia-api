@@ -21,4 +21,17 @@ public interface PlantRepository extends JpaRepository<Plant, Long> {
     @Override
     @EntityGraph(attributePaths = "user")
     Optional<Plant> findById(Long id);
+
+    @EntityGraph(attributePaths = "user")
+    List<Plant> findByUserIdAndStatus(Long userId, com.projeto1cc.grevia.plant.enums.PlantStatus status);
+
+    @EntityGraph(attributePaths = {"user", "carePlans"})
+    org.springframework.data.domain.Page<Plant> findByUserIdAndStatusIn(
+        Long userId, 
+        List<com.projeto1cc.grevia.plant.enums.PlantStatus> statuses, 
+        org.springframework.data.domain.Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = {"user", "carePlans"})
+    org.springframework.data.domain.Page<Plant> findByUserId(Long userId, org.springframework.data.domain.Pageable pageable);
 }

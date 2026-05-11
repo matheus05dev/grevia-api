@@ -45,6 +45,27 @@ public class PlantRestController {
         return ResponseEntity.ok(plantService.updatePlant(id, requestDTO, getAuthenticatedUserEmail()));
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<org.springframework.data.domain.Page<com.projeto1cc.grevia.plant.dto.HistoryResponseDTO>> getPlantHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        return ResponseEntity.ok(plantService.getPlantHistory(getAuthenticatedUserEmail(), pageable));
+    }
+
+    @PatchMapping("/{id}/harvest")
+    public ResponseEntity<Void> harvestPlant(@PathVariable Long id) {
+        plantService.harvestPlant(id, getAuthenticatedUserEmail());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/archive")
+    public ResponseEntity<Void> archivePlant(@PathVariable Long id, @RequestBody(required = false) String notes) {
+        plantService.archivePlant(id, notes, getAuthenticatedUserEmail());
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlant(@PathVariable Long id) {
         plantService.deletePlant(id, getAuthenticatedUserEmail());

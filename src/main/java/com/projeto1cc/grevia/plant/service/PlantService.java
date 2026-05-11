@@ -62,31 +62,54 @@ public class PlantService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        return plantRepository.findByUserId(user.getId()).stream()
+        return plantRepository.findByUserIdAndStatus(user.getId(), com.projeto1cc.grevia.plant.enums.PlantStatus.ACTIVE).stream()
                 .map(plantMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public PlantResponseDTO getPlantById(Long plantId, String userEmail) {
+    public org.springframework.data.domain.Page<com.projeto1cc.grevia.plant.dto.HistoryResponseDTO> getPlantHistory(String userEmail, org.springframework.data.domain.Pageable pageable) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        return plantRepository.findByUserId(user.getId(), pageable)
+                .map(plantMapper::toHistoryResponseDTO);
+    }
+
+    @Transactional
+    public void harvestPlant(Long plantId, String userEmail) {
+        Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
+        plant.setStatus(com.projeto1cc.grevia.plant.enums.PlantStatus.HARVESTED);
+        plant.setHarvestedAt(java.time.LocalDate.now());
+        plantRepository.save(plant);
+    }
+
+    @Transactional
+    public void archivePlant(Long plantId, String notes, String userEmail) {
+        Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
+        plant.setStatus(com.projeto1cc.grevia.plant.enums.PlantStatus.ARCHIVED);
+        plant.setArchivedAt(java.time.LocalDate.now());
+        plant.setHistoryNotes(notes);
+        plantRepository.save(plant);
+    }
+
+    private Plant getPlantAndValidateOwnership(Long plantId, String userEmail) {
         Plant plant = plantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
-
         if (!plant.getUser().getEmail().equals(userEmail)) {
             throw new RuntimeException("Você não tem permissão para acessar esta planta");
         }
+        return plant;
+    }
 
-        return plantMapper.toResponseDTO(plant);
+    @Transactional(readOnly = true)
+    public PlantResponseDTO getPlantById(Long plantId, String userEmail) {
+        return plantMapper.toResponseDTO(getPlantAndValidateOwnership(plantId, userEmail));
     }
 
     @Transactional
     public PlantResponseDTO updatePlant(Long plantId, PlantRequestDTO requestDTO, String userEmail) {
-        Plant plant = plantRepository.findById(plantId)
-                .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
-
-        if (!plant.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Você não tem permissão para atualizar esta planta");
-        }
+        Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
 
         plantMapper.updateEntityFromDto(requestDTO, plant);
         
@@ -99,13 +122,7 @@ public class PlantService {
 
     @Transactional
     public void deletePlant(Long plantId, String userEmail) {
-        Plant plant = plantRepository.findById(plantId)
-                .orElseThrow(() -> new RuntimeException("Planta não encontrada"));
-
-        if (!plant.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Você não tem permissão para deletar esta planta");
-        }
-
+        Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
         plantRepository.delete(plant);
     }
 
@@ -115,5 +132,4 @@ public class PlantService {
                 .map(plantMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
-
 }
