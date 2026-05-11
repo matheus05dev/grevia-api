@@ -133,12 +133,38 @@ class UserServiceTest {
     }
     
     @Test
-    void deactivateUser_ShouldSetStatusToInactive() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    void deleteUserByEmail_ShouldCallDelete() {
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
 
-        userService.deactivateUser(1L);
+        userService.deleteUserByEmail("test@test.com");
 
-        assertEquals(Status.Inactive, user.getStatus());
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void changePassword_ShouldUpdatePasswordWhenCurrentIsCorrect() {
+        com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO dto = new com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO("oldPass", "newPass");
+        user.setPassword("encodedOldPass");
+
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("oldPass", "encodedOldPass")).thenReturn(true);
+        when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
+
+        userService.changePassword("test@test.com", dto);
+
+        assertEquals("encodedNewPass", user.getPassword());
         verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    void changePassword_ShouldThrowExceptionWhenCurrentIsIncorrect() {
+        com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO dto = new com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO("wrongPass", "newPass");
+        user.setPassword("encodedOldPass");
+
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPass", "encodedOldPass")).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> userService.changePassword("test@test.com", dto));
+        verify(userRepository, never()).save(user);
     }
 }

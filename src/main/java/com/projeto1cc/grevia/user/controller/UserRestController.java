@@ -2,7 +2,9 @@ package com.projeto1cc.grevia.user.controller;
 
 import com.projeto1cc.grevia.user.dto.UserRequestDTO;
 import com.projeto1cc.grevia.user.dto.UserResponseDTO;
+import com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO;
 import com.projeto1cc.grevia.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,12 +37,20 @@ public class UserRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE /api/users/me — Deactivates the authenticated user's own account
+    // DELETE /api/users/me — Hard deletes the authenticated user's own account
     @DeleteMapping("/me")
     public ResponseEntity<Void> deactivateMyAccount() {
         String email = getAuthenticatedEmail();
-        userService.deactivateUserByEmail(email);
+        userService.deleteUserByEmail(email);
         return ResponseEntity.noContent().build();
+    }
+
+    // PUT /api/users/me/password - Changes the authenticated user's password
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody ChangePasswordRequestDTO dto) {
+        String email = getAuthenticatedEmail();
+        userService.changePassword(email, dto);
+        return ResponseEntity.ok().build();
     }
 
     // PATCH /api/users/{id}/promote — Promotes a user to ADMIN (Admin only)

@@ -3,6 +3,7 @@ package com.projeto1cc.grevia.user.service;
 
 import com.projeto1cc.grevia.user.dto.UserRequestDTO;
 import com.projeto1cc.grevia.user.dto.UserResponseDTO;
+import com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO;
 import com.projeto1cc.grevia.user.mapper.UserMapper;
 import com.projeto1cc.grevia.user.model.User;
 import com.projeto1cc.grevia.user.model.enums.Role;
@@ -82,21 +83,31 @@ public class UserService {
     public Optional<UserResponseDTO> updateUserByEmail(String email, UserRequestDTO dto) {
         return userRepository.findByEmail(email).map(user -> {
             user.setName(dto.name());
-            if (dto.password() != null && !dto.password().isEmpty()) {
-                user.setPassword(passwordEncoder.encode(dto.password()));
-                log.info("Senha alterada para o usuário via e-mail: {}", user.getEmail());
-            }
             User updatedUser = userRepository.save(user);
             return userMapper.toUserResponseDTO(updatedUser);
         });
     }
 
     @Transactional
-    public void deactivateUserByEmail(String email) {
+    public void deleteUserByEmail(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
-            user.setStatus(Status.Inactive);
-            userRepository.save(user);
+            userRepository.delete(user);
+            log.info("Usuário excluído permanentemente: {}", email);
         });
+    }
+
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequestDTO dto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+
+        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("A senha atual está incorreta.");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(user);
+        log.info("Senha alterada com sucesso para o usuário: {}", email);
     }
 
     @Transactional

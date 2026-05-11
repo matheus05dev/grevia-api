@@ -113,7 +113,7 @@ public class PlantService {
 
         plantMapper.updateEntityFromDto(requestDTO, plant);
         
-        // Update recommendations if soil type changed
+  
         plant.setRecommendations(recommendationService.generateRecommendation(plant.getSoilType(), plant.getSpecies()));
 
         Plant updatedPlant = plantRepository.save(plant);

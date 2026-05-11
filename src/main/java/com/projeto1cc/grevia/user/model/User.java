@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -80,4 +81,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return this.status == Status.Active;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.projeto1cc.grevia.plant.model.Plant> plants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "submittedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.projeto1cc.grevia.core.feedback.model.AppFeedback> feedbacks = new ArrayList<>();
 }

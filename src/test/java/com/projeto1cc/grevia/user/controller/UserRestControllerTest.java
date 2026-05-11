@@ -86,12 +86,27 @@ class UserRestControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void deactivateMyAccount_ShouldReturn204() throws Exception {
-        Mockito.doNothing().when(userService).deactivateUserByEmail("test@test.com");
+        Mockito.doNothing().when(userService).deleteUserByEmail("test@test.com");
 
         mockMvc.perform(delete("/api/users/me"))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(userService, Mockito.times(1)).deactivateUserByEmail("test@test.com");
+        Mockito.verify(userService, Mockito.times(1)).deleteUserByEmail("test@test.com");
+    }
+
+    @Test
+    @WithMockUser(username = "test@test.com")
+    void changeMyPassword_ShouldReturn200() throws Exception {
+        com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO requestDTO = new com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO("old", "newPassword");
+        
+        Mockito.doNothing().when(userService).changePassword(eq("test@test.com"), any(com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO.class));
+
+        mockMvc.perform(put("/api/users/me/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk());
+
+        Mockito.verify(userService, Mockito.times(1)).changePassword(eq("test@test.com"), any(com.projeto1cc.grevia.user.dto.ChangePasswordRequestDTO.class));
     }
 
     @Test
