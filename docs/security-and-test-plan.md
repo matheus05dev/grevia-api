@@ -52,6 +52,7 @@ Use este checklist antes de qualquer deploy em produção:
 - [ ] `application.properties` **não contém** nenhum valor padrão de credencial (senhas, tokens, api keys)
 - [ ] `.env` e `admin-config.properties` estão no `.gitignore` e **nunca commitados**
 
+
 ### Autenticação e Autorização
 - [ ] Expiração do JWT está correta e configurável via env var
 - [ ] `@PreAuthorize` está presente em todos os endpoints admin
@@ -316,7 +317,11 @@ Executar no ambiente de staging antes de cada release:
 | 2 | CRUD de planta | Criar → Listar → Editar → Deletar | 201 → 200 → 200 → 204 |
 | 3 | Plano de cuidado | Criar plano → Registrar cuidado → Listar registros | `nextCareDate` atualizado |
 | 4 | Recuperação de senha | Forgot → Receber e-mail → Reset → Login com nova senha | Login bem-sucedido |
+<<<<<<< HEAD
+| 5 | Exclusão de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
+=======
 | 5 | Desativação de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 | 6 | Promoção de admin | Admin promove usuário → Usuário acessa endpoint admin | `200 OK` |
 
 ---

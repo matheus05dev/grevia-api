@@ -1,11 +1,24 @@
 # Arquitetura e Documentação Técnica — Grevia API
 
-Visão geral das decisões arquiteturais, tecnologias, módulos e padrões de segurança do backend.
+Visão geral atualizada das decisões arquiteturais, tecnologias, módulos e padrões de segurança do backend Grevia. Esta documentação serve como o guia principal para a IA de Frontend realizar a integração.
 
 ---
 
 ## 🚀 Stack Tecnológica
 
+<<<<<<< HEAD
+| Categoria | Tecnologia |
+|---|---|
+| Linguagem | Java 21 |
+| Framework | Spring Boot 3.5.11 |
+| Persistência | Spring Data JPA + Hibernate |
+| Banco de Dados | MySQL 8.0 |
+| Segurança | Spring Security + JJWT (0.12.3) |
+| Mapeamento (DTOs) | MapStruct (1.5.5) + Lombok |
+| Rate Limiting | Bucket4j (8.10.1) |
+| Documentação da API | Springdoc OpenAPI (Swagger UI v2.8.15) |
+| E-mail | Spring Mail (JavaMailSender / Gmail SMTP) |
+=======
 | Categoria | Tecnologia | Versão |
 |---|---|---|
 | Linguagem | Java (OpenJDK Temurin) | 21 |
@@ -19,13 +32,20 @@ Visão geral das decisões arquiteturais, tecnologias, módulos e padrões de se
 | E-mail Transacional | Spring Mail (JavaMailSender / Gmail SMTP) | — |
 | Observabilidade | Spring Actuator | — |
 | Containerização | Docker (Multi-Stage Build) | — |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ---
 
-## 🗂️ Estrutura do Projeto
+## 🗂️ Estrutura do Projeto (Domínios)
 
-A API segue uma arquitetura de **Monólito Modular** organizada por domínios de negócio. Cada domínio é autossuficiente (controller, service, repository, model, dto, mapper e enums próprios), comunicando-se apenas através de interfaces de serviço.
+A API segue uma arquitetura de **Monólito Modular** organizada por domínios de negócio (`core`, `plant`, `care`, `user`). Cada domínio tem seu ciclo de vida completo (Controller, Service, Repository, DTO).
 
+<<<<<<< HEAD
+1. **`core/`**: Infraestrutura (Auth, JwtService, JWT Filter, RateLimiter, CORS, Email, Feedback do App).
+2. **`plant/`**: Plantas do usuário (`PlantRestController`), histórico/arquivamento de plantas, colheita, feed comunitário e catálogo de espécies.
+3. **`care/`**: Planos de cuidado (`CarePlanRestController`) e histórico de ações executadas (`CareRecordRestController`). Orquestra a automação da próxima data de cuidado.
+4. **`user/`**: Gestão de perfil (`UserRestController`), métricas de gamificação (pontos, streak) e promoção de roles (`ADMIN`/`USER`).
+=======
 ```
 com.projeto1cc.grevia/
 │
@@ -94,13 +114,26 @@ com.projeto1cc.grevia/
 | **Stateless** | Sem sessões no servidor; cada requisição é autenticada via JWT |
 | **Domínios isolados** | Cada módulo (`plant`, `care`, `user`) tem seus próprios pacotes e não depende diretamente de outros |
 | **Core como infraestrutura** | Tudo que é transversal (segurança, e-mail, upload) fica em `core/`, sem lógica de negócio |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ---
 
-## 🏗️ Módulos do Sistema
+## 🔄 Fluxo de Negócio e Gamificação
 
-### 1. Core — Infraestrutura Compartilhada (`core/`)
+Quando o Frontend integra com a API, ele deve observar o seguinte fluxo lógico:
 
+<<<<<<< HEAD
+1. **Autenticação:** Todas as rotas (exceto `/api/auth/**` e `/actuator/**`) exigem o header `Authorization: Bearer <TOKEN>`.
+2. **Gamificação:**
+   - O usuário ganha pontos ao completar um cuidado (`POST /api/plants/{plantId}/cares/{careId}/complete`).
+   - Se o cuidado for feito de dias consecutivos, o `currentStreak` aumenta.
+   - O Frontend deve fazer um `GET /api/users/me` periodicamente (ex: após concluir um cuidado) para atualizar a HUD de gamificação na tela.
+3. **Ciclo de Vida da Planta:**
+   - Criação: O Spring Boot injeta planos de cuidados baseados na espécie automaticamente.
+   - Colheita: `PATCH /api/plants/{id}/harvest` (apenas marcacional, sem impacto deletério).
+   - Arquivamento: `PATCH /api/plants/{id}/archive` (Remove a planta da listagem ativa e move para o histórico).
+   - Histórico: `GET /api/plants/history` retorna as plantas mortas/arquivadas paginadas.
+=======
 Tudo que é **transversal** ao domínio fica aqui:
 
 | Pacote | Responsabilidade | Principais Classes |
@@ -275,83 +308,41 @@ classDiagram
     CarePlan --> CareType
     CarePlan --> FrequencyType
 ```
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ---
 
 ## 🔒 Segurança
 
-A segurança da API é implementada em **múltiplas camadas independentes**, garantindo defesa em profundidade: limitação de requisições → autenticação → autorização → controle de acesso ao recurso.
-
-### Camadas de Segurança
-
-```mermaid
-flowchart TD
-    A["🌐 Requisição HTTP"] --> B["1️⃣ RateLimitingFilter\n(Bucket4j — por IP)"]
-    B -->|"Limite OK"| C["2️⃣ JwtAuthenticationFilter\n(Valida Bearer Token)"]
-    B -->|"Limite excedido"| X["❌ 429 Too Many Requests"]
-    C -->|"Token válido → popula SecurityContext"| D["3️⃣ ActionLoggingFilter\n(Log de auditoria)"]
-    C -->|"Token inválido"| Y["❌ 401 Unauthorized"]
-    C -->|"Rota pública"| D
-    D --> E["4️⃣ SecurityFilterChain\n(@PreAuthorize / hasRole)"]
-    E -->|"Autorizado"| F["🎯 Controller"]
-    E -->|"Sem permissão"| Z["❌ 403 Forbidden"]
-    F --> G["Service → Repository"]
-    G --> H["🗄️ MySQL"]
-    H --> I["✅ Response ao Cliente"]
-```
+A segurança é garantida em múltiplas camadas:
+- **Bucket4j:** Limite de 10 req/15min por IP nas rotas de Auth. 60 req/min no geral. (Retorna `429 Too Many Requests`).
+- **JWT Stateless:** Ausência completa de estado. Os claims carregam a identidade (email) do usuário.
+- **Isolamento de Recurso:** O backend extrai o `email` pelo `SecurityContextHolder` nos Services. Nenhuma rota de domínio permite que o `User A` altere dados de `User B`.
+- **CORS:** Liberado via `SecurityConfig` para `http://localhost:5173`, `http://localhost:3000` e a URL de produção na Vercel.
 
 ---
 
-### 1. Autenticação — JWT (JJWT 0.12.3)
+## 📋 Dicionário de Enumerações e Chaves
 
-O sistema é **completamente stateless**: nenhuma sessão é armazenada no servidor. A identidade do usuário viaja em cada requisição através de um **JSON Web Token**.
+Ao enviar requisições JSON, preste atenção aos Enums (precisam ser strings exatas):
 
-**Configuração de sessão (`SecurityConfig.java`):**
-```java
-.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-```
-
-**Fluxo de Login:**
-
-```mermaid
-sequenceDiagram
-    participant C as 🖥️ Cliente
-    participant A as AuthController
-    participant J as JwtService
-    participant DB as 🗄️ Banco de Dados
-
-    Note over C,DB: 1. Login
-    C->>A: POST /api/auth/login {email, senha}
-    A->>DB: Busca usuário por e-mail
-    DB-->>A: User entity
-    A->>A: BCrypt.matches(senhaRecebida, hashArmazenado)
-    A->>J: generateToken(userDetails)
-    J-->>A: JWT assinado com HMAC-SHA256
-    A-->>C: 200 OK { token: "eyJ..." }
-
-    Note over C,DB: 2. Requisição Autenticada
-    C->>A: GET /api/plants (Header: Bearer eyJ...)
-    A->>J: extractUsername(token)
-    J-->>A: email do usuário
-    A->>DB: loadUserByUsername(email)
-    DB-->>A: UserDetails
-    A->>J: isTokenValid(token, userDetails)
-    J-->>A: ✅ Token válido → popula SecurityContext
-    A-->>C: 200 OK { plantas }
-```
-
-**Detalhes técnicos do JWT:**
-- **Algoritmo de assinatura:** HMAC-SHA256 (HS256) com chave secreta configurada via variável de ambiente
-- **Claims:** contém o `username` (e-mail) do usuário
-- **Validação (`JwtAuthenticationFilter`):** extrai o token do header `Authorization: Bearer <token>`, valida assinatura e expiração, e popula o `SecurityContextHolder`
-- **Sem renovação automática:** o cliente deve fazer novo login ao expirar
+- **`Species`:** `ESPADA_DE_SAO_JORGE`, `SAMAMBAIA`, `SUCULENTA`, `CACTO`, `TOMATE`, etc. Use `GET /api/plants/species` para puxar os valores validos.
+- **`SoilType`:** `ARENOSO`, `ARGILOSO`, `HUMOSO`, `CALCARIO`, `MISTO`.
+- **`CareType`:** `REGA`, `PODA`, `ADUBACAO`, `TRANSPLANTE`, `CONTROLE_PRAGAS`, `OUTRO`.
+- **`FrequencyType`:** `DIARIO`, `SEMANAL`, `DUAS_VEZES_SEMANA`, `TRES_VEZES_SEMANA`, `QUINZENAL`, `MENSAL`, `BIMESTRAL`, `SOB_DEMANDA`.
+- **`PlantUtility`:** `ORNAMENTAL`, `HORTALICA_SALADA`, `TEMPERO_ERVA`, `FRUTA`, `LEGUME_RAIZ`, `OUTREM`.
 
 ---
 
-### 2. Hashing de Senhas — BCrypt
+## 📝 Como a IA Frontend Deve Consumir
 
-Senhas **nunca são armazenadas em texto puro**. O `BCryptPasswordEncoder` é configurado como bean global:
+1. **Sempre envie o Token:** Mantenha um Interceptor (se usar Axios) ou middleware (no Fetch) injetando o Bearer. Tratamento centralizado para `401 Unauthorized` deve forçar o Logout e levar à `/login`.
+2. **Atualização Otimista (Optimistic UI):** Ao marcar um plano como completo (`/complete`), a API vai recalcular a próxima data (`nextCareDate`). Atualize a interface com a resposta dessa chamada.
+3. **Erros (400 Bad Request):** Falhas de validação de DTO no Backend retornam JSON padrão do Spring detalhando quais campos falharam (Ex: `email must be well-formed`).
 
+<<<<<<< HEAD
+*Para a referência exata das rotas HTTP, consulte o arquivo `docs/api-endpoints.md` ou `ARCHITECTURE.md`.*
+=======
 ```java
 @Bean
 public PasswordEncoder passwordEncoder() {
@@ -504,3 +495,4 @@ Endpoints expostos:
 | `docker-compose.prod.yml` | Ambiente de produção (com variáveis via `.env`) |
 
 O Dockerfile usa **multi-stage build** para criar uma imagem final enxuta (~150MB) sem o Maven instalado.
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
