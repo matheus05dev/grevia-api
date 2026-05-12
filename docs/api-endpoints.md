@@ -47,7 +47,11 @@ Authorization: Bearer <seu-token-jwt>
 | `GET` | `/api/users/me` | ✅ | Retorna o perfil do usuário autenticado |
 | `PUT` | `/api/users/me` | ✅ | Atualiza o perfil do usuário autenticado |
 | `PUT` | `/api/users/me/password` | ✅ | Altera a senha do usuário autenticado |
+<<<<<<< HEAD
 | `DELETE` | `/api/users/me` | ✅ | Exclui permanentemente a conta do usuário autenticado |
+=======
+| `DELETE` | `/api/users/me` | ✅ | Exclui a conta do usuário permanentemente (Hard Delete) |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 | `PATCH` | `/api/users/{id}/promote` | ✅ 👑 | Promove usuário a ADMIN (somente admins) |
 
 ---
@@ -57,6 +61,7 @@ Authorization: Bearer <seu-token-jwt>
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
 | `POST` | `/api/plants` | ✅ | Cria uma nova planta |
+<<<<<<< HEAD
 | `GET` | `/api/plants` | ✅ | Lista todas as plantas do usuário (ativas) |
 | `GET` | `/api/plants/{id}` | ✅ | Retorna detalhes de uma planta específica |
 | `PUT` | `/api/plants/{id}` | ✅ | Atualiza informações de uma planta |
@@ -66,6 +71,16 @@ Authorization: Bearer <seu-token-jwt>
 | `GET` | `/api/plants/history` | ✅ | Histórico paginado de plantas (Query params: `page` e `size`, padrão 0 e 10) |
 | `GET` | `/api/plants/feed` | ✅ | Feed comunitário (lista plantas de todos os usuários) |
 | `GET` | `/api/plants/species` | ✅ | Retorna lista de espécies disponíveis, seus nomes formatados e utilidade |
+=======
+| `GET` | `/api/plants` | ✅ | Lista todas as plantas ativas do usuário |
+| `GET` | `/api/plants/{id}` | ✅ | Retorna uma planta por ID |
+| `PUT` | `/api/plants/{id}` | ✅ | Atualiza uma planta |
+| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Marca uma planta como colhida |
+| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta |
+| `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta |
+| `GET` | `/api/plants/history` | ✅ | Retorna o histórico paginado das plantas |
+| `GET` | `/api/plants/feed` | ✅ | Feed comunitário (todas as plantas) |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ### Payload de Exemplos
 
@@ -79,6 +94,7 @@ Authorization: Bearer <seu-token-jwt>
 }
 ```
 
+<<<<<<< HEAD
 **Arquivar Planta (`PATCH /api/plants/{id}/archive`):**
 ```json
 "A planta secou durante o inverno."
@@ -114,6 +130,16 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
   "message": "Seria legal ter um modo noturno no app."
 }
 ```
+=======
+---
+
+## 💡 Feedback do App (`/api/feedback`)
+
+| Método | Rota | Protegido | Descrição |
+|---|---|---|---|
+| `POST` | `/api/feedback` | ✅ | Submete um feedback ou sugestão para o aplicativo |
+| `GET` | `/api/feedback` | ✅ | Lista todos os feedbacks (pode ter restrição de acesso futuramente) |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ---
 

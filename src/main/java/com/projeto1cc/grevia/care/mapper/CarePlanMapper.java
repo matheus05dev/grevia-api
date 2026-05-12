@@ -16,8 +16,23 @@ public interface CarePlanMapper {
     @Mapping(target = "plant", ignore = true)
     CarePlan toEntity(CarePlanRequestDTO dto);
 
-    @Mapping(source = "plant.id", target = "plantId")
-    CarePlanResponseDTO toResponseDTO(CarePlan carePlan);
+    default CarePlanResponseDTO toResponseDTO(CarePlan carePlan) {
+        return toResponseDTO(carePlan, null, null);
+    }
+
+    default CarePlanResponseDTO toResponseDTO(CarePlan carePlan, Boolean levelUp, String newLevel) {
+        if (carePlan == null) return null;
+        return new CarePlanResponseDTO(
+            carePlan.getId(),
+            carePlan.getCareType(),
+            carePlan.getFrequencyType(),
+            carePlan.getNextCareDate(),
+            carePlan.getLastCareDate(),
+            carePlan.getPlant() != null ? carePlan.getPlant().getId() : null,
+            levelUp,
+            newLevel
+        );
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "nextCareDate", ignore = true)

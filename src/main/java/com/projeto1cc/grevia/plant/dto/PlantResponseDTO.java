@@ -3,7 +3,7 @@ package com.projeto1cc.grevia.plant.dto;
 import com.projeto1cc.grevia.plant.enums.PlantUtility;
 import com.projeto1cc.grevia.plant.enums.SoilType;
 import com.projeto1cc.grevia.plant.enums.Species;
-import lombok.Data;
+
 
 public record PlantResponseDTO(
     Long id,
@@ -13,5 +13,9 @@ public record PlantResponseDTO(
     String recommendations,
     SoilType soilType,
     String ownerName,
-    PlantUtility utility
+    PlantUtility utility,
+    String utilityDisplayName,
+    String soilTypeDisplayName,
+    Integer progressPercentage,
+    Integer daysRemaining
 ) {}

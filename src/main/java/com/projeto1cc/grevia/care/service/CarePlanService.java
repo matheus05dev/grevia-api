@@ -9,9 +9,14 @@ import com.projeto1cc.grevia.care.repository.CarePlanRepository;
 import com.projeto1cc.grevia.care.repository.CareRecordRepository;
 import com.projeto1cc.grevia.plant.model.Plant;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
+import com.projeto1cc.grevia.user.model.User;
+import com.projeto1cc.grevia.user.model.enums.GardenerLevel;
+import com.projeto1cc.grevia.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,6 +30,7 @@ public class CarePlanService {
     private final PlantRepository plantRepository;
     private final CareRecordRepository careRecordRepository;
     private final CarePlanMapper carePlanMapper;
+    private final UserRepository userRepository;
 
     @Transactional
     public CarePlanResponseDTO createCarePlan(Long plantId, CarePlanRequestDTO requestDTO, String userEmail) {
@@ -113,6 +119,13 @@ public class CarePlanService {
             throw new RuntimeException("Você não tem permissão para gerenciar esse plano de cuidado");
         }
 
+        // ── Bloqueio de adiantamento: só permite hoje ou atrasados ──
+        if (carePlan.getNextCareDate() != null && carePlan.getNextCareDate().isAfter(LocalDate.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Este cuidado está agendado para " + carePlan.getNextCareDate()
+                + ". Só é possível registrar cuidados para hoje ou atrasados.");
+        }
+
         // Create the record
         com.projeto1cc.grevia.care.model.CareRecord record = new com.projeto1cc.grevia.care.model.CareRecord();
         record.setCarePlan(carePlan);
@@ -125,7 +138,40 @@ public class CarePlanService {
         carePlan.setNextCareDate(calculateNextDate(LocalDate.now(), carePlan.getFrequencyType()));
         
         CarePlan updatedPlan = carePlanRepository.save(carePlan);
-        return carePlanMapper.toResponseDTO(updatedPlan);
+
+        // ── Gamificação: pontos, streak e level up ──
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Nível ANTES de ganhar pontos
+        GardenerLevel levelBefore = GardenerLevel.fromPoints(
+            user.getTotalPoints() != null ? user.getTotalPoints() : 0
+        );
+
+        // Incrementar pontos e ações
+        user.setTotalCareActions((user.getTotalCareActions() != null ? user.getTotalCareActions() : 0) + 1);
+        user.setTotalPoints((user.getTotalPoints() != null ? user.getTotalPoints() : 0) + 10);
+
+        // Streak logic
+        LocalDate lastCare = user.getLastCareDate();
+        if (lastCare == null || lastCare.isBefore(LocalDate.now().minusDays(1))) {
+            user.setCurrentStreak(1);
+        } else if (lastCare.equals(LocalDate.now().minusDays(1))) {
+            user.setCurrentStreak((user.getCurrentStreak() != null ? user.getCurrentStreak() : 0) + 1);
+        }
+        // If lastCare == today, don't change streak (already cared today)
+        user.setLastCareDate(LocalDate.now());
+        userRepository.save(user);
+
+        // Nível DEPOIS de ganhar pontos
+        GardenerLevel levelAfter = GardenerLevel.fromPoints(user.getTotalPoints());
+        boolean didLevelUp = levelAfter.getLevel() > levelBefore.getLevel();
+
+        return carePlanMapper.toResponseDTO(
+            updatedPlan,
+            didLevelUp ? true : null,
+            didLevelUp ? levelAfter.getFullTitle() : null
+        );
     }
 
     public LocalDate calculateNextDate(LocalDate baseDate, FrequencyType frequencyType) {

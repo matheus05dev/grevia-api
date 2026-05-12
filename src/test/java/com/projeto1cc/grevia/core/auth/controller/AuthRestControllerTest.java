@@ -5,6 +5,7 @@ import com.projeto1cc.grevia.core.auth.dto.ForgotPasswordRequestDTO;
 import com.projeto1cc.grevia.core.auth.dto.LoginRequestDTO;
 import com.projeto1cc.grevia.core.auth.dto.ResetPasswordRequestDTO;
 import com.projeto1cc.grevia.core.auth.service.JwtService;
+import com.projeto1cc.grevia.core.auth.service.RefreshTokenService;
 import com.projeto1cc.grevia.user.dto.UserRequestDTO;
 import com.projeto1cc.grevia.user.dto.UserResponseDTO;
 import com.projeto1cc.grevia.user.model.User;
@@ -53,10 +54,13 @@ class AuthRestControllerTest {
     @MockitoBean
     private JwtService jwtService;
 
+    @MockitoBean
+    private RefreshTokenService refreshTokenService;
+
     @Test
     void register_ShouldReturn200AndUserResponse() throws Exception {
         UserRequestDTO requestDTO = new UserRequestDTO("Test", "test@test.com", "password", null, null);
-        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0);
+        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "🌱 Jardineiro Iniciante", "🌱", 1);
 
         Mockito.when(userService.createUser(any(UserRequestDTO.class))).thenReturn(responseDTO);
 
@@ -84,6 +88,10 @@ class AuthRestControllerTest {
                .thenReturn(mockAuthentication);
         
         Mockito.when(jwtService.generateToken(any(UserDetails.class))).thenReturn("mocked_jwt_token");
+
+        com.projeto1cc.grevia.core.auth.model.RefreshToken mockRefreshToken = new com.projeto1cc.grevia.core.auth.model.RefreshToken();
+        mockRefreshToken.setToken("mocked_refresh_token");
+        Mockito.when(refreshTokenService.createRefreshToken("test@test.com")).thenReturn(mockRefreshToken);
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

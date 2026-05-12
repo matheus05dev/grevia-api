@@ -17,7 +17,7 @@ Durante o desenvolvimento (ambiente dev), é comum utilizar configurações perm
 
 Em produção, o código-fonte deve ser limpo de qualquer credencial. 
 - **Nunca fazer hardcode de chaves criptográficas:** Segredos sensíveis como o `SECRET_KEY` do JWT não devem residir em classes Java (`static final`). 
-- **Evitar credenciais em properties provisionados no Git:** Configurações como senhas de SMTP do Spring Mail, ou API Keys (ex: Cloudinary) não devem possuir os valores reais de produção (ou app passwords) em campos padrão (`spring.mail.password=minha_senha`). 
+- **Evitar credenciais em properties provisionados no Git:** Configurações como senhas de SMTP do Spring Mail, ou API Keys, não devem possuir os valores reais de produção (ou app passwords) em campos padrão (`spring.mail.password=minha_senha`). 
 - **Estratégia:** Injetar esses valores **exclusivamente via Variáveis de Ambiente (`.env`)** ou através de Secret Managers do provedor de Nuvem, os capturando através de `@Value("${nome.variavel}")`.
 
 ### 2. Configuração Básica e Isolamento (CORS)
@@ -317,7 +317,11 @@ Executar no ambiente de staging antes de cada release:
 | 2 | CRUD de planta | Criar → Listar → Editar → Deletar | 201 → 200 → 200 → 204 |
 | 3 | Plano de cuidado | Criar plano → Registrar cuidado → Listar registros | `nextCareDate` atualizado |
 | 4 | Recuperação de senha | Forgot → Receber e-mail → Reset → Login com nova senha | Login bem-sucedido |
+<<<<<<< HEAD
 | 5 | Exclusão de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
+=======
+| 5 | Desativação de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
+>>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 | 6 | Promoção de admin | Admin promove usuário → Usuário acessa endpoint admin | `200 OK` |
 
 ---

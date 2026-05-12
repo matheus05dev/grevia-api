@@ -1,10 +1,14 @@
 package com.projeto1cc.grevia.plant.controller;
 
+import com.projeto1cc.grevia.plant.dto.HistoryResponseDTO;
 import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
 import com.projeto1cc.grevia.plant.service.PlantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -46,11 +50,11 @@ public class PlantRestController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<org.springframework.data.domain.Page<com.projeto1cc.grevia.plant.dto.HistoryResponseDTO>> getPlantHistory(
+    public ResponseEntity<Page<HistoryResponseDTO>> getPlantHistory(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(plantService.getPlantHistory(getAuthenticatedUserEmail(), pageable));
     }
 

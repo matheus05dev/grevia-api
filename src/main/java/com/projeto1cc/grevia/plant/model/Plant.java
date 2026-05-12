@@ -1,11 +1,17 @@
 package com.projeto1cc.grevia.plant.model;
 
+import com.projeto1cc.grevia.care.model.CarePlan;
+import com.projeto1cc.grevia.plant.enums.PlantStatus;
 import com.projeto1cc.grevia.plant.enums.SoilType;
 import com.projeto1cc.grevia.plant.enums.Species;
 import com.projeto1cc.grevia.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,16 +40,16 @@ public class Plant {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private com.projeto1cc.grevia.plant.enums.PlantStatus status = com.projeto1cc.grevia.plant.enums.PlantStatus.ACTIVE;
+    private PlantStatus status = PlantStatus.ACTIVE;
 
     @Column(name = "registered_at", updatable = false)
-    private java.time.LocalDate registeredAt;
+    private LocalDate registeredAt;
 
     @Column(name = "harvested_at")
-    private java.time.LocalDate harvestedAt;
+    private LocalDate harvestedAt;
 
     @Column(name = "archived_at")
-    private java.time.LocalDate archivedAt;
+    private LocalDate archivedAt;
 
     @Column(name = "history_notes", length = 1000)
     private String historyNotes;
@@ -60,7 +66,7 @@ public class Plant {
     @PrePersist
     protected void onCreate() {
         if (this.registeredAt == null) {
-            this.registeredAt = java.time.LocalDate.now();
+            this.registeredAt = LocalDate.now();
         }
     }
 
@@ -69,5 +75,5 @@ public class Plant {
     private User user;
 
     @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<com.projeto1cc.grevia.care.model.CarePlan> carePlans = new java.util.ArrayList<>();
+    private List<CarePlan> carePlans = new ArrayList<>();
 }
