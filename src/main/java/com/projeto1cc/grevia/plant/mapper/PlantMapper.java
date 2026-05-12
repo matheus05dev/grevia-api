@@ -28,14 +28,23 @@ public interface PlantMapper {
         String utilityDisplayName = (utility != null) ? utility.getDisplayName() : null;
         String soilTypeDisplayName = (plant.getSoilType() != null) ? plant.getSoilType().getDisplayName() : null;
 
-        // Calculate progress percentage and days remaining
-        Integer progressPercentage = null;
+        // calcula porcentagem de progresso e dias restantes
+        Double progressPercentage = null;
         Integer daysRemaining = null;
         if (plant.getSpecies() != null && plant.getRegisteredAt() != null) {
             int maturityDays = plant.getSpecies().getMaturityDays();
             long daysSinceCreation = ChronoUnit.DAYS.between(plant.getRegisteredAt(), LocalDate.now());
-            progressPercentage = Math.min(100, (int) ((daysSinceCreation * 100) / Math.max(1, maturityDays)));
-            daysRemaining = Math.max(0, maturityDays - (int) daysSinceCreation);
+            
+            // "Care boost": se foi cuidada hoje ou no passado, adiciona 1 dia à idade efetiva
+            // Isso garante que plantas novas mostrem algum progresso (1%+) no primeiro dia se cuidadas.
+            boolean hasBeenCared = plant.getCarePlans() != null && plant.getCarePlans().stream()
+                    .anyMatch(cp -> cp.getLastCareDate() != null);
+            
+            long effectiveDays = hasBeenCared ? daysSinceCreation + 1 : daysSinceCreation;
+            
+            double rawPct = (effectiveDays * 100.0) / Math.max(1, maturityDays);
+            progressPercentage = Math.min(100.0, Math.round(rawPct * 10.0) / 10.0);
+            daysRemaining = Math.max(0, maturityDays - (int) effectiveDays);
         }
 
         return new PlantResponseDTO(
@@ -50,7 +59,8 @@ public interface PlantMapper {
             utilityDisplayName,
             soilTypeDisplayName,
             progressPercentage,
-            daysRemaining
+            daysRemaining,
+            plant.getStatus() != null ? plant.getStatus().name() : null
         );
     }
 

@@ -16,6 +16,7 @@ public record PlantResponseDTO(
     PlantUtility utility,
     String utilityDisplayName,
     String soilTypeDisplayName,
-    Integer progressPercentage,
-    Integer daysRemaining
+    Double progressPercentage,
+    Integer daysRemaining,
+    String status
 ) {}
