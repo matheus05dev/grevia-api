@@ -19,11 +19,10 @@ A Grevia descomplicar o cultivo de plantas, oferecendo **recomendações intelig
 |---|---|
 | 🔐 **Autenticação JWT** | Registro, login, recuperação de senha com token por e-mail |
 | 🌿 **CRUD de Plantas** | Criação, edição, exclusão e listagem de plantas do usuário |
-| 📸 **Upload de Imagens** | Upload via Cloudinary para fotos das plantas |
 | 🧠 **Recomendações** | Motor inteligente que sugere espécies baseado em terreno e tipo |
 | 📋 **Planos de Cuidado** | Cronogramas personalizados com frequências de rega dinâmicas |
 | ✅ **Registros de Cuidado** | Histórico de cuidados realizados por planta |
-| 💡 **Sugestões de Espécies** | Usuários podem sugerir novas espécies para o catálogo |
+| 💡 **Feedback do App** | Usuários podem enviar feedbacks gerais e sugestões de melhoria |
 | 📰 **Feed Comunitário** | Visualização pública de plantas cadastradas |
 | 🛡️ **Rate Limiting** | Proteção contra abuso via Bucket4j |
 | 👑 **Administração** | Promoção de usuários a Admin |
@@ -35,10 +34,10 @@ A Grevia descomplicar o cultivo de plantas, oferecendo **recomendações intelig
 - **Banco de Dados:** MySQL 8.0
 - **Segurança:** Spring Security + JWT (JJWT 0.12.3)
 - **Mapeamento:** MapStruct 1.5.5 + Lombok
-- **Upload de Imagens:** Cloudinary SDK 1.36.0
 - **E-mail:** Spring Mail + Resend SDK 3.1.0
 - **Rate Limiting:** Bucket4j 8.10.1
 - **Documentação:** Springdoc OpenAPI 2.8.15 (Swagger UI)
+- **Testes:** JUnit 5, Mockito, MockMvc
 - **Infraestrutura:** Docker + Docker Compose
 - **Observabilidade:** Spring Actuator (health, info, metrics)
 
@@ -58,17 +57,18 @@ src/main/java/com/projeto1cc/grevia/
 ├── core/                    # Infraestrutura compartilhada
 │   ├── auth/                #   Autenticação (controller, DTOs, JWT service)
 │   ├── config/              #   Configurações (Security, Cloudinary, SpringDoc, Filtros)
+│   ├── feedback/            #   Gestão de Feedback do App
 │   ├── security/            #   Rate Limiting filter
 │   ├── service/             #   Serviços transversais (Cloudinary, Email)
 │   └── storage/             #   Abstração de armazenamento
 ├── plant/                   # Domínio de Plantas
-│   ├── controller/          #   PlantRestController, SpeciesSuggestionRestController
+│   ├── controller/          #   PlantRestController
 │   ├── dto/                 #   Request/Response DTOs
 │   ├── enums/               #   Species, PlantType, TerrainType
 │   ├── mapper/              #   MapStruct mappers
 │   ├── model/               #   Entidades JPA
 │   ├── repository/          #   Spring Data repositories
-│   └── service/             #   PlantService, RecommendationService, SuggestionService
+│   └── service/             #   PlantService, RecommendationService
 ├── care/                    # Domínio de Cuidados
 │   ├── controller/          #   CarePlanRestController, CareRecordRestController
 │   ├── dto/                 #   Request/Response DTOs

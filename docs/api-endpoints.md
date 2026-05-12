@@ -71,7 +71,8 @@ Authorization: Bearer <seu-token-jwt>
 |---|---|---|---|
 | `GET` | `/api/users/me` | ✅ | Retorna o perfil do usuário autenticado |
 | `PUT` | `/api/users/me` | ✅ | Atualiza o perfil do usuário autenticado |
-| `DELETE` | `/api/users/me` | ✅ | Desativa a conta do usuário autenticado |
+| `PUT` | `/api/users/me/password` | ✅ | Altera a senha do usuário autenticado |
+| `DELETE` | `/api/users/me` | ✅ | Exclui a conta do usuário permanentemente (Hard Delete) |
 | `PATCH` | `/api/users/{id}/promote` | ✅ 👑 | Promove usuário a ADMIN (somente admins) |
 
 ---
@@ -81,12 +82,14 @@ Authorization: Bearer <seu-token-jwt>
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
 | `POST` | `/api/plants` | ✅ | Cria uma nova planta |
-| `GET` | `/api/plants` | ✅ | Lista todas as plantas do usuário |
+| `GET` | `/api/plants` | ✅ | Lista todas as plantas ativas do usuário |
 | `GET` | `/api/plants/{id}` | ✅ | Retorna uma planta por ID |
 | `PUT` | `/api/plants/{id}` | ✅ | Atualiza uma planta |
+| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Marca uma planta como colhida |
+| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta |
 | `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta |
+| `GET` | `/api/plants/history` | ✅ | Retorna o histórico paginado das plantas |
 | `GET` | `/api/plants/feed` | ✅ | Feed comunitário (todas as plantas) |
-| `POST` | `/api/plants/{id}/image` | ✅ | Upload de imagem (multipart/form-data) |
 
 ### `POST /api/plants`
 
@@ -100,21 +103,14 @@ Authorization: Bearer <seu-token-jwt>
 }
 ```
 
-### `POST /api/plants/{id}/image`
-
-```
-Content-Type: multipart/form-data
-Campo: file (arquivo de imagem, máx. 5MB)
-```
-
 ---
 
-## 💡 Sugestões de Espécies (`/api/species/suggestions`)
+## 💡 Feedback do App (`/api/feedback`)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
-| `POST` | `/api/species/suggestions` | ✅ | Submete uma sugestão de nova espécie |
-| `GET` | `/api/species/suggestions` | ✅ | Lista todas as sugestões da comunidade |
+| `POST` | `/api/feedback` | ✅ | Submete um feedback ou sugestão para o aplicativo |
+| `GET` | `/api/feedback` | ✅ | Lista todos os feedbacks (pode ter restrição de acesso futuramente) |
 
 ---
 

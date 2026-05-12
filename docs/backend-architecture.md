@@ -16,7 +16,6 @@ Visão geral das decisões arquiteturais, tecnologias, módulos e padrões de se
 | Mapeamento (DTOs) | MapStruct + Lombok | 1.5.5 |
 | Rate Limiting | Bucket4j | 8.10.1 |
 | Documentação da API | Springdoc OpenAPI (Swagger UI) | 2.8.15 |
-| Upload de Imagens | Cloudinary Java SDK | 1.36.0 |
 | E-mail Transacional | Spring Mail (JavaMailSender / Gmail SMTP) | — |
 | Observabilidade | Spring Actuator | — |
 | Containerização | Docker (Multi-Stage Build) | — |
@@ -42,24 +41,30 @@ com.projeto1cc.grevia/
 │   │   ├── SecurityConfig.java         ← Cadeia de filtros, CORS, BCrypt, sessão stateless
 │   │   ├── JwtAuthenticationFilter.java ← Extrai e valida o token JWT a cada requisição
 │   │   ├── ActionLoggingFilter.java    ← Log de todas as ações HTTP (método, rota, status)
-│   │   ├── CloudinaryConfig.java       ← Bean de configuração do Cloudinary SDK
 │   │   └── SpringDocConfig.java        ← Configuração do Swagger UI com suporte a Bearer Token
 │   │
 │   ├── security/                       ← Proteção contra abusos
 │   │   ├── RateLimitingFilter.java     ← Rate limiting por IP com Bucket4j (Token Bucket)
 │   │   └── AdminSeeder.java            ← Seed automático do usuário ADMIN na inicialização
 │   │
-│   └── service/                        ← Serviços de infraestrutura compartilhados
-│       ├── CloudinaryService.java      ← Upload de imagens para o Cloudinary
-│       └── EmailService.java           ← Envio de e-mails transacionais via Spring Mail
+│   ├── service/                        ← Serviços de infraestrutura compartilhados
+│   │   └── EmailService.java           ← Envio de e-mails transacionais via Spring Mail
+│   │
+│   └── feedback/                       ← Gestão de feedback do aplicativo
+│       ├── controller/                 ← AppFeedbackRestController
+│       ├── service/                    ← AppFeedbackService
+│       ├── repository/                 ← AppFeedbackRepository
+│       ├── model/                      ← AppFeedback (entidade JPA)
+│       ├── dto/                        ← DTOs de feedback
+│       └── mapper/                     ← AppFeedbackMapper (MapStruct)
 │
 ├── plant/                              ← Domínio de Plantas
-│   ├── controller/                     ← PlantRestController, SpeciesSuggestionRestController
-│   ├── service/                        ← PlantService, PlantRecommendationService, SpeciesSuggestionService
-│   ├── repository/                     ← PlantRepository, SpeciesSuggestionRepository
-│   ├── model/                          ← Plant, SpeciesSuggestion (entidades JPA)
+│   ├── controller/                     ← PlantRestController
+│   ├── service/                        ← PlantService, PlantRecommendationService
+│   ├── repository/                     ← PlantRepository
+│   ├── model/                          ← Plant (entidades JPA)
 │   ├── dto/                            ← DTOs de entrada e saída
-│   ├── mapper/                         ← PlantMapper, SpeciesSuggestionMapper (MapStruct)
+│   ├── mapper/                         ← PlantMapper (MapStruct)
 │   └── enums/                          ← Species, SoilType, PlantUtility
 │
 ├── care/                               ← Domínio de Cuidados
@@ -101,21 +106,20 @@ Tudo que é **transversal** ao domínio fica aqui:
 | Pacote | Responsabilidade | Principais Classes |
 |---|---|---|
 | `core.auth` | Autenticação e autorização | `AuthRestController`, `JwtService`, DTOs de login/registro/forgot-password |
-| `core.config` | Configs globais do Spring | `SecurityConfig`, `CloudinaryConfig`, `SpringDocConfig`, `JwtAuthenticationFilter`, `ActionLoggingFilter` |
+| `core.config` | Configs globais do Spring | `SecurityConfig`, `SpringDocConfig`, `JwtAuthenticationFilter`, `ActionLoggingFilter` |
 | `core.security` | Proteção contra abuso | `RateLimitingFilter` (Bucket4j), `AdminSeeder` |
-| `core.service` | Serviços de infraestrutura | `CloudinaryService` (upload de imagens), `EmailService` (envio de e-mails) |
+| `core.service` | Serviços de infraestrutura | `EmailService` (envio de e-mails) |
+| `core.feedback` | Feedback do aplicativo | `AppFeedbackRestController`, `AppFeedbackService` |
 
 ### 2. Plant — Domínio de Plantas (`plant/`)
 
-Gerencia o **catálogo de plantas**, **recomendações inteligentes** e **sugestões da comunidade**.
+Gerencia o **catálogo de plantas** e **recomendações inteligentes**.
 
 | Componente | Descrição |
 |---|---|
-| `PlantRestController` | CRUD completo de plantas + feed comunitário + upload de imagens |
-| `SpeciesSuggestionRestController` | Endpoint para submissão e listagem de sugestões de novas espécies |
-| `PlantService` | Lógica de negócio de plantas (criação, atualização, deleção, validações de posse) |
+| `PlantRestController` | CRUD completo de plantas (com ciclo de vida) + feed comunitário |
+| `PlantService` | Lógica de negócio de plantas (criação, histórico, arquivamento, validações) |
 | `PlantRecommendationService` | Motor de recomendação baseado em tipo de terreno + tipo de planta (50+ espécies catalogadas) |
-| `SpeciesSuggestionService` | Gestão de sugestões de espécies feitas pela comunidade |
 
 ### 3. Care — Domínio de Cuidados (`care/`)
 
@@ -168,13 +172,12 @@ classDiagram
         String customSpeciesName
         String recommendations
         SoilType soilType
-        String imagePath
     }
 
-    class SpeciesSuggestion {
+    class AppFeedback {
         Long id
-        String suggestedName
-        String description
+        String category
+        String message
         LocalDateTime submittedAt
     }
 
@@ -260,7 +263,7 @@ classDiagram
     }
 
     User "1" --> "*" Plant : possui
-    User "1" --> "*" SpeciesSuggestion : submete
+    User "1" --> "*" AppFeedback : submete
     Plant "1" --> "*" CarePlan : tem
     CarePlan "1" --> "*" CareRecord : registra
 
@@ -465,15 +468,6 @@ Todas as requisições são registradas no log da aplicação após processament
 | Recuperação de senha | Token temporário com TTL | `UserService` + `EmailService` |
 | CORS | Whitelist de origens | `SecurityConfig.corsConfigurationSource()` |
 | Auditoria | Log estruturado de requisições | `ActionLoggingFilter` |
-
----
-
-## 📸 Upload de Imagens (Cloudinary)
-
-O serviço `CloudinaryService` gerencia o upload de imagens para o Cloudinary:
-- Endpoint: `POST /api/plants/{id}/image` (multipart/form-data)
-- Limite de arquivo: 5 MB
-- A URL da imagem é salva na entidade Plant e retornada no DTO de resposta.
 
 ---
 

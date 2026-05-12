@@ -17,7 +17,7 @@ Durante o desenvolvimento (ambiente dev), é comum utilizar configurações perm
 
 Em produção, o código-fonte deve ser limpo de qualquer credencial. 
 - **Nunca fazer hardcode de chaves criptográficas:** Segredos sensíveis como o `SECRET_KEY` do JWT não devem residir em classes Java (`static final`). 
-- **Evitar credenciais em properties provisionados no Git:** Configurações como senhas de SMTP do Spring Mail, ou API Keys (ex: Cloudinary) não devem possuir os valores reais de produção (ou app passwords) em campos padrão (`spring.mail.password=minha_senha`). 
+- **Evitar credenciais em properties provisionados no Git:** Configurações como senhas de SMTP do Spring Mail, ou API Keys, não devem possuir os valores reais de produção (ou app passwords) em campos padrão (`spring.mail.password=minha_senha`). 
 - **Estratégia:** Injetar esses valores **exclusivamente via Variáveis de Ambiente (`.env`)** ou através de Secret Managers do provedor de Nuvem, os capturando através de `@Value("${nome.variavel}")`.
 
 ### 2. Configuração Básica e Isolamento (CORS)
@@ -49,7 +49,6 @@ Use este checklist antes de qualquer deploy em produção:
 ### Credenciais e Segredos
 - [ ] Chave JWT (`JWT_SECRET`) gerada com `openssl rand -base64 64` e configurada como variável de ambiente
 - [ ] App Password do Gmail **revogado** e um novo criado, configurado apenas como env var
-- [ ] API Secret do Cloudinary **regenerado**, configurado apenas como env var
 - [ ] `application.properties` **não contém** nenhum valor padrão de credencial (senhas, tokens, api keys)
 - [ ] `.env` e `admin-config.properties` estão no `.gitignore` e **nunca commitados**
 
@@ -100,11 +99,6 @@ SPRING_MAIL_HOST=smtp.gmail.com
 SPRING_MAIL_PORT=587
 SPRING_MAIL_USERNAME=contactgrevia@gmail.com
 SPRING_MAIL_PASSWORD=<nova-app-password>
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=<seu-cloud>
-CLOUDINARY_API_KEY=<nova-api-key>
-CLOUDINARY_API_SECRET=<novo-api-secret>
 
 # Comportamento em produção
 DDL_AUTO=validate
@@ -320,12 +314,10 @@ Executar no ambiente de staging antes de cada release:
 |---|---|---|---|
 | 1 | Cadastro completo | Registrar → Login → Ver perfil `/me` | Dados corretos sem campo `password` |
 | 2 | CRUD de planta | Criar → Listar → Editar → Deletar | 201 → 200 → 200 → 204 |
-| 3 | Upload de imagem | Upload de JPG < 5MB | URL do Cloudinary retornada |
-| 4 | Upload inválido | Upload de arquivo > 5MB | `413` ou erro claro |
-| 5 | Plano de cuidado | Criar plano → Registrar cuidado → Listar registros | `nextCareDate` atualizado |
-| 6 | Recuperação de senha | Forgot → Receber e-mail → Reset → Login com nova senha | Login bem-sucedido |
-| 7 | Desativação de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
-| 8 | Promoção de admin | Admin promove usuário → Usuário acessa endpoint admin | `200 OK` |
+| 3 | Plano de cuidado | Criar plano → Registrar cuidado → Listar registros | `nextCareDate` atualizado |
+| 4 | Recuperação de senha | Forgot → Receber e-mail → Reset → Login com nova senha | Login bem-sucedido |
+| 5 | Desativação de conta | `DELETE /me` → Tentar login | `401 Unauthorized` |
+| 6 | Promoção de admin | Admin promove usuário → Usuário acessa endpoint admin | `200 OK` |
 
 ---
 

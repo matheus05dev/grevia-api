@@ -40,16 +40,12 @@ docker-compose ps
 
 A aplicação utiliza variáveis de ambiente para serviços externos. Para **desenvolvimento local**, os valores default do `application.properties` funcionam para o banco de dados.
 
-Para funcionalidades de **e-mail** e **upload de imagens**, configure as variáveis abaixo (via variáveis de ambiente ou no `application.properties`):
+Para funcionalidades de **e-mail**, configure as variáveis abaixo (via variáveis de ambiente ou no `application.properties`):
 
 | Variável | Descrição | Obrigatória no Dev? |
 |---|---|---|
 | `SPRING_MAIL_USERNAME` | E-mail para envio (Gmail) | Só se testar e-mail |
-| `SPRING_MAIL_PASSWORD` | Senha de App do Gmail | Só se testar e-mail |
-| `RESEND_API_KEY` | Chave da API do Resend | Só se testar e-mail |
-| `CLOUDINARY_CLOUD_NAME` | Nome do cloud Cloudinary | Só se testar upload |
-| `CLOUDINARY_API_KEY` | API key do Cloudinary | Só se testar upload |
-| `CLOUDINARY_API_SECRET` | API secret do Cloudinary | Só se testar upload |
+| `SPRING_MAIL_PASSWORD` | Senha de App do email (Gmail) | Só se testar e-mail |
 
 ---
 

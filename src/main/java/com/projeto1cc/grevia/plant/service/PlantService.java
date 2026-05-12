@@ -3,6 +3,8 @@ package com.projeto1cc.grevia.plant.service;
 import com.projeto1cc.grevia.plant.model.Plant;
 import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
+import com.projeto1cc.grevia.plant.dto.HistoryResponseDTO;
+import com.projeto1cc.grevia.plant.enums.PlantStatus;
 import com.projeto1cc.grevia.plant.mapper.PlantMapper;
 import com.projeto1cc.grevia.plant.repository.PlantRepository;
 import com.projeto1cc.grevia.care.model.CarePlan;
@@ -13,9 +15,12 @@ import com.projeto1cc.grevia.care.dto.CarePlanRequestDTO;
 import com.projeto1cc.grevia.user.model.User;
 import com.projeto1cc.grevia.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,13 +67,13 @@ public class PlantService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        return plantRepository.findByUserIdAndStatus(user.getId(), com.projeto1cc.grevia.plant.enums.PlantStatus.ACTIVE).stream()
+        return plantRepository.findByUserIdAndStatus(user.getId(), PlantStatus.ACTIVE).stream()
                 .map(plantMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public org.springframework.data.domain.Page<com.projeto1cc.grevia.plant.dto.HistoryResponseDTO> getPlantHistory(String userEmail, org.springframework.data.domain.Pageable pageable) {
+    public Page<HistoryResponseDTO> getPlantHistory(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
@@ -79,16 +84,16 @@ public class PlantService {
     @Transactional
     public void harvestPlant(Long plantId, String userEmail) {
         Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
-        plant.setStatus(com.projeto1cc.grevia.plant.enums.PlantStatus.HARVESTED);
-        plant.setHarvestedAt(java.time.LocalDate.now());
+        plant.setStatus(PlantStatus.HARVESTED);
+        plant.setHarvestedAt(LocalDate.now());
         plantRepository.save(plant);
     }
 
     @Transactional
     public void archivePlant(Long plantId, String notes, String userEmail) {
         Plant plant = getPlantAndValidateOwnership(plantId, userEmail);
-        plant.setStatus(com.projeto1cc.grevia.plant.enums.PlantStatus.ARCHIVED);
-        plant.setArchivedAt(java.time.LocalDate.now());
+        plant.setStatus(PlantStatus.ARCHIVED);
+        plant.setArchivedAt(LocalDate.now());
         plant.setHistoryNotes(notes);
         plantRepository.save(plant);
     }
@@ -113,7 +118,7 @@ public class PlantService {
 
         plantMapper.updateEntityFromDto(requestDTO, plant);
         
-  
+
         plant.setRecommendations(recommendationService.generateRecommendation(plant.getSoilType(), plant.getSpecies()));
 
         Plant updatedPlant = plantRepository.save(plant);

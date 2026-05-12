@@ -2,7 +2,7 @@ package com.projeto1cc.grevia.care.dto;
 
 import com.projeto1cc.grevia.care.enums.CareType;
 import com.projeto1cc.grevia.care.enums.FrequencyType;
-import lombok.Data;
+
 
 import java.time.LocalDate;
 
@@ -12,5 +12,7 @@ public record CarePlanResponseDTO(
     FrequencyType frequencyType,
     LocalDate nextCareDate,
     LocalDate lastCareDate,
-    Long plantId
+    Long plantId,
+    Boolean levelUp,
+    String newLevel
 ) {}

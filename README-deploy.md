@@ -56,11 +56,6 @@ SPRING_MAIL_PASSWORD=sua_senha_de_app_do_google
 
 # Resend (E-mail transacional)
 RESEND_API_KEY=re_SuaChaveAqui
-
-# Cloudinary (Upload de imagens)
-CLOUDINARY_CLOUD_NAME=seu_cloud_name
-CLOUDINARY_API_KEY=sua_api_key
-CLOUDINARY_API_SECRET=seu_api_secret
 ```
 
 Salve e saia (`CTRL+O` → `Enter` → `CTRL+X`).
