@@ -1,5 +1,6 @@
 package com.projeto1cc.grevia.plant.controller;
 
+import com.projeto1cc.grevia.plant.dto.ArchivePlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.HistoryResponseDTO;
 import com.projeto1cc.grevia.plant.dto.PlantRequestDTO;
 import com.projeto1cc.grevia.plant.dto.PlantResponseDTO;
@@ -65,7 +66,8 @@ public class PlantRestController {
     }
 
     @PatchMapping("/{id}/archive")
-    public ResponseEntity<Void> archivePlant(@PathVariable Long id, @RequestBody(required = false) String notes) {
+    public ResponseEntity<Void> archivePlant(@PathVariable Long id, @RequestBody(required = false) ArchivePlantRequestDTO requestDTO) {
+        String notes = (requestDTO != null) ? requestDTO.notes() : null;
         plantService.archivePlant(id, notes, getAuthenticatedUserEmail());
         return ResponseEntity.noContent().build();
     }

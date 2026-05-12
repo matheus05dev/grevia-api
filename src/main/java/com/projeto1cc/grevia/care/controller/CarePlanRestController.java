@@ -1,5 +1,6 @@
 package com.projeto1cc.grevia.care.controller;
 
+import com.projeto1cc.grevia.care.dto.CareCompleteRequestDTO;
 import com.projeto1cc.grevia.care.dto.CarePlanRequestDTO;
 import com.projeto1cc.grevia.care.dto.CarePlanResponseDTO;
 import com.projeto1cc.grevia.care.service.CarePlanService;
@@ -51,7 +52,8 @@ public class CarePlanRestController {
     public ResponseEntity<CarePlanResponseDTO> completeCarePlan(
             @PathVariable Long plantId,
             @PathVariable Long careId,
-            @RequestBody(required = false) String notes) {
+            @RequestBody(required = false) CareCompleteRequestDTO requestDTO) {
+        String notes = (requestDTO != null) ? requestDTO.notes() : null;
         return ResponseEntity.ok(carePlanService.completeCarePlan(plantId, careId, notes, getAuthenticatedUserEmail()));
     }
 
