@@ -1,9 +1,9 @@
-# 📡 Referência de Endpoints — Grevia API
+# 📡 Referência Completa de Endpoints — Grevia API
 
 > Base URL: `http://localhost:8080` (dev) | `https://grevia-api-production.up.railway.app` (prod)
 
-Todos os endpoints protegidos requerem o header:
-```
+Todos os endpoints protegidos (✅) requerem o envio do header:
+```http
 Authorization: Bearer <seu-token-jwt>
 ```
 
@@ -18,10 +18,10 @@ Authorization: Bearer <seu-token-jwt>
 | `POST` | `/api/auth/forgot-password` | ❌ | Solicita recuperação de senha (envia e-mail) |
 | `POST` | `/api/auth/reset-password` | ❌ | Redefine senha com token recebido por e-mail |
 
-### `POST /api/auth/register`
+### Payload de Exemplos
 
+**Registro:**
 ```json
-// Request Body
 {
   "name": "João Silva",
   "email": "joao@email.com",
@@ -29,38 +29,13 @@ Authorization: Bearer <seu-token-jwt>
 }
 ```
 
-### `POST /api/auth/login`
-
+**Login:**
 ```json
-// Request Body
 {
   "email": "joao@email.com",
   "password": "senhaSegura123"
 }
-
-// Response
-{
-  "token": "eyJhbGciOi..."
-}
-```
-
-### `POST /api/auth/forgot-password`
-
-```json
-// Request Body
-{
-  "email": "joao@email.com"
-}
-```
-
-### `POST /api/auth/reset-password`
-
-```json
-// Request Body
-{
-  "token": "abc123-token-recebido-por-email",
-  "newPassword": "novaSenha456"
-}
+// Resposta: { "token": "eyJhbG..." }
 ```
 
 ---
@@ -71,7 +46,8 @@ Authorization: Bearer <seu-token-jwt>
 |---|---|---|---|
 | `GET` | `/api/users/me` | ✅ | Retorna o perfil do usuário autenticado |
 | `PUT` | `/api/users/me` | ✅ | Atualiza o perfil do usuário autenticado |
-| `DELETE` | `/api/users/me` | ✅ | Desativa a conta do usuário autenticado |
+| `PUT` | `/api/users/me/password` | ✅ | Altera a senha do usuário autenticado |
+| `DELETE` | `/api/users/me` | ✅ | Exclui permanentemente a conta do usuário autenticado |
 | `PATCH` | `/api/users/{id}/promote` | ✅ 👑 | Promove usuário a ADMIN (somente admins) |
 
 ---
@@ -81,40 +57,63 @@ Authorization: Bearer <seu-token-jwt>
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
 | `POST` | `/api/plants` | ✅ | Cria uma nova planta |
-| `GET` | `/api/plants` | ✅ | Lista todas as plantas do usuário |
-| `GET` | `/api/plants/{id}` | ✅ | Retorna uma planta por ID |
-| `PUT` | `/api/plants/{id}` | ✅ | Atualiza uma planta |
-| `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta |
-| `GET` | `/api/plants/feed` | ✅ | Feed comunitário (todas as plantas) |
-| `POST` | `/api/plants/{id}/image` | ✅ | Upload de imagem (multipart/form-data) |
+| `GET` | `/api/plants` | ✅ | Lista todas as plantas do usuário (ativas) |
+| `GET` | `/api/plants/{id}` | ✅ | Retorna detalhes de uma planta específica |
+| `PUT` | `/api/plants/{id}` | ✅ | Atualiza informações de uma planta |
+| `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta completamente |
+| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Realiza a colheita de uma planta (ex: frutos) |
+| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta (Body opcional: notas/motivo em string pura) |
+| `GET` | `/api/plants/history` | ✅ | Histórico paginado de plantas (Query params: `page` e `size`, padrão 0 e 10) |
+| `GET` | `/api/plants/feed` | ✅ | Feed comunitário (lista plantas de todos os usuários) |
+| `GET` | `/api/plants/species` | ✅ | Retorna lista de espécies disponíveis, seus nomes formatados e utilidade |
 
-### `POST /api/plants`
+### Payload de Exemplos
 
+**Criação de Planta (`POST /api/plants`):**
 ```json
-// Request Body
 {
   "name": "Minha Samambaia",
   "species": "SAMAMBAIA",
-  "plantType": "ORNAMENTAL",
-  "terrainType": "ARGILOSO"
+  "customSpeciesName": null,
+  "soilType": "ARGILOSO"
 }
 ```
 
-### `POST /api/plants/{id}/image`
-
+**Arquivar Planta (`PATCH /api/plants/{id}/archive`):**
+```json
+"A planta secou durante o inverno."
 ```
-Content-Type: multipart/form-data
-Campo: file (arquivo de imagem, máx. 5MB)
+
+**Histórico de Plantas (`GET /api/plants/history?page=0&size=10`):**
+Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
+
+**Lista de Espécies (`GET /api/plants/species`):**
+```json
+[
+  {
+    "name": "ESPADA_DE_SAO_JORGE",
+    "formattedName": "Espada de Sao Jorge",
+    "utility": "ORNAMENTAL"
+  }
+]
 ```
 
 ---
 
-## 💡 Sugestões de Espécies (`/api/species/suggestions`)
+## 💬 Feedback do App (`/api/feedback`)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
-| `POST` | `/api/species/suggestions` | ✅ | Submete uma sugestão de nova espécie |
-| `GET` | `/api/species/suggestions` | ✅ | Lista todas as sugestões da comunidade |
+| `POST` | `/api/feedback` | ✅ | Envia um feedback sobre o aplicativo |
+| `GET` | `/api/feedback` | ✅ | Lista todos os feedbacks recebidos |
+
+**Exemplo de Payload (`POST`):**
+```json
+{
+  "category": "SUGESTÃO",
+  "message": "Seria legal ter um modo noturno no app."
+}
+```
 
 ---
 
@@ -126,6 +125,24 @@ Campo: file (arquivo de imagem, máx. 5MB)
 | `GET` | `/api/plants/{plantId}/cares` | ✅ | Lista os planos de cuidado da planta |
 | `PUT` | `/api/plants/{plantId}/cares/{careId}` | ✅ | Atualiza um plano de cuidado |
 | `DELETE` | `/api/plants/{plantId}/cares/{careId}` | ✅ | Remove um plano de cuidado |
+| `POST` | `/api/plants/{plantId}/cares/{careId}/complete`| ✅ | Conclui um cuidado (Body opcional: notas) |
+
+### Payload de Exemplos
+
+**Criação/Atualização (`POST` e `PUT`):**
+```json
+{
+  "careType": "REGA",
+  "frequencyType": "SEMANAL",
+  "startDate": "2026-05-10"
+}
+```
+
+**Concluir cuidado (`POST .../complete`):**
+```json
+"Reguei com 200ml de água."
+```
+> **Nota:** Marcar um cuidado como concluído atualiza automaticamente a data do próximo cuidado com base na frequência (`frequencyType`), registra no histórico e atualiza a gamificação do usuário (pontos/streak).
 
 ---
 
@@ -133,8 +150,16 @@ Campo: file (arquivo de imagem, máx. 5MB)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
-| `POST` | `/api/cares/{carePlanId}/records` | ✅ | Registra um cuidado realizado |
-| `GET` | `/api/cares/{carePlanId}/records` | ✅ | Lista os registros do plano de cuidado |
+| `POST` | `/api/cares/{carePlanId}/records` | ✅ | Adiciona um registro manual de cuidado |
+| `GET` | `/api/cares/{carePlanId}/records` | ✅ | Lista os registros históricos de um plano |
+
+**Exemplo de Payload (`POST`):**
+```json
+{
+  "notes": "Adicionei adubo NPK 10-10-10",
+  "careDate": "2026-05-11"
+}
+```
 
 ---
 
@@ -150,7 +175,6 @@ Campo: file (arquivo de imagem, máx. 5MB)
 
 ## 📖 Documentação Interativa (Swagger)
 
-Acesse a documentação interativa completa (gerada automaticamente pelo Springdoc OpenAPI):
-
-- **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-- **OpenAPI JSON:** [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+A API fornece uma interface interativa:
+- **Swagger UI:** `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON:** `http://localhost:8080/api-docs`
