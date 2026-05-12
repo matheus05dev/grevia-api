@@ -28,19 +28,18 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private final ConcurrentHashMap<String, Bucket> authBuckets    = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Bucket> generalBuckets = new ConcurrentHashMap<>();
 
-    // 10 tokens refilled every 15 minutes — auth endpoints (brute-force / credential-stuffing protection)
-    // interval refill = tokens are added at a constant rate, not all at once, preventing burst exploitation
+    // 30 tokens refilled every 15 minutes — auth endpoints
     private Bucket newAuthBucket() {
-        Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(15)));
+        Bandwidth limit = Bandwidth.classic(30, Refill.intervally(30, Duration.ofMinutes(15)));
         return Bucket.builder().addLimit(limit).build();
     }
-
+ 
     // Two-layer protection for general endpoints:
-    //   Layer 1 → 60 req/min   (burst protection)
-    //   Layer 2 → 500 req/hour (slow DDoS / scraping protection)
+    //   Layer 1 → 300 req/min   (burst protection)
+    //   Layer 2 → 2000 req/hour (slow DDoS / scraping protection)
     private Bucket newGeneralBucket() {
-        Bandwidth perMinute = Bandwidth.classic(60,  Refill.intervally(60,  Duration.ofMinutes(1)));
-        Bandwidth perHour   = Bandwidth.classic(500, Refill.intervally(500, Duration.ofHours(1)));
+        Bandwidth perMinute = Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1)));
+        Bandwidth perHour   = Bandwidth.classic(2000, Refill.intervally(2000, Duration.ofHours(1)));
         return Bucket.builder()
                 .addLimit(perMinute)
                 .addLimit(perHour)
