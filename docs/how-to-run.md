@@ -1,6 +1,6 @@
 # Guia de Execução Local — Grevia API
 
-Passo a passo para rodar o banco de dados e a API no seu computador.
+Passo a passo para configurar seu ambiente e rodar a API Grevia no seu computador.
 
 ---
 
@@ -10,97 +10,99 @@ Passo a passo para rodar o banco de dados e a API no seu computador.
 |---|---|---|
 | Java JDK | 21 | [Download (Temurin)](https://adoptium.net/temurin/releases?version=21) |
 | Docker + Docker Compose | Recente | [Download](https://www.docker.com/products/docker-desktop/) |
-| IDE *(opcional)* | — | IntelliJ IDEA, VS Code ou Eclipse |
-
-> **Nota:** Não é necessário instalar o Maven — o projeto inclui o Maven Wrapper (`mvnw`).
+| IDE *(recomendado)* | — | IntelliJ IDEA, VS Code ou Cursor |
 
 ---
 
-## 🐳 Passo 1: Subindo o Banco de Dados
+## 🐳 Passo 1: Banco de Dados
 
-A API utiliza MySQL 8.0 via Docker. Abra um terminal na raiz do projeto e execute:
+A API utiliza MySQL 8.0. A maneira mais fácil de rodar é via Docker:
 
 ```bash
 docker-compose up -d
 ```
 
-Isso irá:
-- Baixar a imagem do MySQL 8.0 (na primeira vez)
-- Criar o banco `greviadb` automaticamente
-- Expor na porta `3306`
-
-Para verificar se está rodando:
-```bash
-docker-compose ps
-```
+Isso irá subir um container MySQL na porta `3306` com as credenciais padrão definidas no `docker-compose.yml`.
 
 ---
 
-## ⚙️ Passo 2: Variáveis de Ambiente
+## ⚙️ Passo 2: Configuração do Ambiente
 
-A aplicação utiliza variáveis de ambiente para serviços externos. Para **desenvolvimento local**, os valores default do `application.properties` funcionam para o banco de dados.
+O projeto utiliza variáveis de ambiente e arquivos de propriedades externos para segredos.
 
-Para funcionalidades de **e-mail**, configure as variáveis abaixo (via variáveis de ambiente ou no `application.properties`):
+### 1. Variáveis de Ambiente (.env)
+Copie o arquivo de exemplo e preencha com seus dados:
+```bash
+cp .env.example .env
+```
+*(No Windows use `copy .env.example .env`)*
 
-| Variável | Descrição | Obrigatória no Dev? |
-|---|---|---|
-| `SPRING_MAIL_USERNAME` | E-mail para envio (Gmail) | Só se testar e-mail |
-| `SPRING_MAIL_PASSWORD` | Senha de App do email (Gmail) | Só se testar e-mail |
+### 2. Usuário Administrador Inicial
+Para que a API crie um usuário admin automaticamente no primeiro boot:
+1. Copie o arquivo `admin-config.properties.example` para `admin-config.properties`.
+2. Altere as credenciais conforme desejado.
 
 ---
 
 ## 🏃 Passo 3: Executando a API
 
-**No Windows (PowerShell):**
+Utilize o Maven Wrapper incluso no projeto:
+
+**Windows (PowerShell):**
 ```bash
 .\mvnw.cmd spring-boot:run
 ```
 
-**No Linux / macOS:**
+**Linux / macOS:**
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Aguarde até ver a mensagem:
-```
-Started GreviaApplication in X seconds
-```
-
-A API estará disponível em **http://localhost:8080**.
+A API estará disponível em: **http://localhost:8080**  
+Swagger UI: **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
 
 ---
 
-## 📚 Passo 4: Acessando o Swagger UI
+## 🧪 Passo 4: Executando Testes
 
-Com a API rodando, abra no navegador:
+É altamente recomendado rodar os testes antes de realizar qualquer alteração:
 
-👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+```bash
+# Rodar todos os testes
+./mvnw test
 
-### Primeiros passos no Swagger:
-
-1. Execute `POST /api/auth/register` para criar sua conta
-2. Execute `POST /api/auth/login` para obter o token JWT
-3. Clique em **"Authorize"** (cadeado no topo) e cole: `Bearer <seu-token>`
-4. Use os demais endpoints normalmente
+# Rodar apenas testes unitários
+./mvnw test -Dtest="*ServiceTest"
+```
 
 ---
 
-## 🐳 Alternativa: Rodar Tudo com Docker
+## 📚 Documentação Interativa (Swagger)
 
-Se não quiser instalar o Java, rode a API inteira via Docker Compose:
+1. Com a API rodando, acesse o link do Swagger.
+2. Para testar endpoints protegidos:
+    - Use `POST /api/auth/login` com as credenciais do admin (definidas no passo 2).
+    - Copie o `token` retornado.
+    - Clique em **Authorize** no topo da página.
+    - Digite `Bearer SEU_TOKEN_AQUI`.
+
+---
+
+## 🐳 Alternativa: Docker Full Stack
+
+Para rodar o banco + API em containers isolados sem instalar o Java localmente:
 
 ```bash
 docker-compose up -d --build
 ```
 
-Isso irá buildar a API dentro de um container Maven e executar com JRE Alpine.
-
 ---
 
-## 🛑 Parando os Serviços
+## 🛑 Comandos Úteis
 
 | Ação | Comando |
 |---|---|
-| Parar a API (terminal) | `Ctrl + C` |
-| Parar containers Docker | `docker-compose down` |
-| Parar e remover volumes | `docker-compose down -v` |
+| Parar containers | `docker-compose stop` |
+| Remover containers e rede | `docker-compose down` |
+| Limpar banco de dados (volumes) | `docker-compose down -v` |
+| Re-buildar a API | `./mvnw clean compile` |

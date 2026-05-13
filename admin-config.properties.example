@@ -1,0 +1,5 @@
+# Configurações do usuário administrador inicial
+# Este arquivo deve ser renomeado para 'admin-config.properties'
+admin.email=admin@grevia.com
+admin.password=admin123
+admin.name=Administrador do Sistema

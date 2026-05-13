@@ -47,12 +47,25 @@ Authorization: Bearer <seu-token-jwt>
 | `GET` | `/api/users/me` | ✅ | Retorna o perfil do usuário autenticado |
 | `PUT` | `/api/users/me` | ✅ | Atualiza o perfil do usuário autenticado |
 | `PUT` | `/api/users/me/password` | ✅ | Altera a senha do usuário autenticado |
-<<<<<<< HEAD
-| `DELETE` | `/api/users/me` | ✅ | Exclui permanentemente a conta do usuário autenticado |
-=======
-| `DELETE` | `/api/users/me` | ✅ | Exclui a conta do usuário permanentemente (Hard Delete) |
->>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
+| `DELETE` | `/api/users/me` | ✅ | Exclui permanentemente a conta do usuário (Hard Delete) |
 | `PATCH` | `/api/users/{id}/promote` | ✅ 👑 | Promove usuário a ADMIN (somente admins) |
+
+### Resposta do Perfil (`GET /api/users/me`)
+```json
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "role": "USER",
+  "status": "Active",
+  "lastCareDate": "2026-05-13",
+  "currentStreak": 5,
+  "totalCareActions": 42,
+  "totalPoints": 210,
+  "gardenerLevel": "🪴 Jardineiro Dedicado",
+  "gardenerLevelEmoji": "🪴",
+  "gardenerLevelNumber": 3
+}
+```
 
 ---
 
@@ -61,26 +74,15 @@ Authorization: Bearer <seu-token-jwt>
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
 | `POST` | `/api/plants` | ✅ | Cria uma nova planta |
-<<<<<<< HEAD
-| `GET` | `/api/plants` | ✅ | Lista todas as plantas do usuário (ativas) |
+| `GET` | `/api/plants` | ✅ | Lista todas as plantas ativas do usuário |
 | `GET` | `/api/plants/{id}` | ✅ | Retorna detalhes de uma planta específica |
 | `PUT` | `/api/plants/{id}` | ✅ | Atualiza informações de uma planta |
 | `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta completamente |
-| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Realiza a colheita de uma planta (ex: frutos) |
-| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta (Body opcional: notas/motivo em string pura) |
-| `GET` | `/api/plants/history` | ✅ | Histórico paginado de plantas (Query params: `page` e `size`, padrão 0 e 10) |
-| `GET` | `/api/plants/feed` | ✅ | Feed comunitário (lista plantas de todos os usuários) |
-| `GET` | `/api/plants/species` | ✅ | Retorna lista de espécies disponíveis, seus nomes formatados e utilidade |
-=======
-| `GET` | `/api/plants` | ✅ | Lista todas as plantas ativas do usuário |
-| `GET` | `/api/plants/{id}` | ✅ | Retorna uma planta por ID |
-| `PUT` | `/api/plants/{id}` | ✅ | Atualiza uma planta |
-| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Marca uma planta como colhida |
-| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta |
-| `DELETE` | `/api/plants/{id}` | ✅ | Remove uma planta |
-| `GET` | `/api/plants/history` | ✅ | Retorna o histórico paginado das plantas |
+| `PATCH` | `/api/plants/{id}/harvest` | ✅ | Realiza a colheita de uma planta |
+| `PATCH` | `/api/plants/{id}/archive` | ✅ | Arquiva uma planta (Body: notas/motivo em string) |
+| `GET` | `/api/plants/history` | ✅ | Histórico paginado (Query: `page`, `size`) |
 | `GET` | `/api/plants/feed` | ✅ | Feed comunitário (todas as plantas) |
->>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
+| `GET` | `/api/plants/species` | ✅ | Lista de espécies disponíveis e utilidade |
 
 ### Payload de Exemplos
 
@@ -89,19 +91,33 @@ Authorization: Bearer <seu-token-jwt>
 {
   "name": "Minha Samambaia",
   "species": "SAMAMBAIA",
-  "customSpeciesName": null,
   "soilType": "ARGILOSO"
 }
 ```
 
-<<<<<<< HEAD
+**Resposta de Planta (`GET /api/plants/{id}`):**
+```json
+{
+  "id": 1,
+  "name": "Minha Samambaia",
+  "species": "SAMAMBAIA",
+  "customSpeciesName": null,
+  "recommendations": "...",
+  "soilType": "ARGILOSO",
+  "ownerName": "João Silva",
+  "utility": "ORNAMENTAL",
+  "utilityDisplayName": "Ornamental",
+  "soilTypeDisplayName": "Argiloso",
+  "progressPercentage": 15.5,
+  "daysRemaining": 45,
+  "status": "ALIVE"
+}
+```
+
 **Arquivar Planta (`PATCH /api/plants/{id}/archive`):**
 ```json
 "A planta secou durante o inverno."
 ```
-
-**Histórico de Plantas (`GET /api/plants/history?page=0&size=10`):**
-Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
 
 **Lista de Espécies (`GET /api/plants/species`):**
 ```json
@@ -116,7 +132,7 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
 
 ---
 
-## 💬 Feedback do App (`/api/feedback`)
+## 💡 Feedback do App (`/api/feedback`)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -130,16 +146,6 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
   "message": "Seria legal ter um modo noturno no app."
 }
 ```
-=======
----
-
-## 💡 Feedback do App (`/api/feedback`)
-
-| Método | Rota | Protegido | Descrição |
-|---|---|---|---|
-| `POST` | `/api/feedback` | ✅ | Submete um feedback ou sugestão para o aplicativo |
-| `GET` | `/api/feedback` | ✅ | Lista todos os feedbacks (pode ter restrição de acesso futuramente) |
->>>>>>> 2c93c95d113d71980f231decae191d1a1fdfd121
 
 ---
 
@@ -151,24 +157,15 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
 | `GET` | `/api/plants/{plantId}/cares` | ✅ | Lista os planos de cuidado da planta |
 | `PUT` | `/api/plants/{plantId}/cares/{careId}` | ✅ | Atualiza um plano de cuidado |
 | `DELETE` | `/api/plants/{plantId}/cares/{careId}` | ✅ | Remove um plano de cuidado |
-| `POST` | `/api/plants/{plantId}/cares/{careId}/complete`| ✅ | Conclui um cuidado (Body opcional: notas) |
+| `POST` | `/api/plants/{plantId}/cares/{careId}/complete`| ✅ | Conclui um cuidado (Body: notas em string) |
 
 ### Payload de Exemplos
-
-**Criação/Atualização (`POST` e `PUT`):**
-```json
-{
-  "careType": "REGA",
-  "frequencyType": "SEMANAL",
-  "startDate": "2026-05-10"
-}
-```
 
 **Concluir cuidado (`POST .../complete`):**
 ```json
 "Reguei com 200ml de água."
 ```
-> **Nota:** Marcar um cuidado como concluído atualiza automaticamente a data do próximo cuidado com base na frequência (`frequencyType`), registra no histórico e atualiza a gamificação do usuário (pontos/streak).
+> **Nota:** Marcar como concluído atualiza automaticamente a data do próximo cuidado, registra no histórico e concede pontos ao usuário.
 
 ---
 
@@ -178,14 +175,6 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
 |---|---|---|---|
 | `POST` | `/api/cares/{carePlanId}/records` | ✅ | Adiciona um registro manual de cuidado |
 | `GET` | `/api/cares/{carePlanId}/records` | ✅ | Lista os registros históricos de um plano |
-
-**Exemplo de Payload (`POST`):**
-```json
-{
-  "notes": "Adicionei adubo NPK 10-10-10",
-  "careDate": "2026-05-11"
-}
-```
 
 ---
 
@@ -201,6 +190,5 @@ Retorna um objeto `Page` do Spring contendo `HistoryResponseDTO`.
 
 ## 📖 Documentação Interativa (Swagger)
 
-A API fornece uma interface interativa:
 - **Swagger UI:** `http://localhost:8080/swagger-ui.html`
 - **OpenAPI JSON:** `http://localhost:8080/api-docs`
