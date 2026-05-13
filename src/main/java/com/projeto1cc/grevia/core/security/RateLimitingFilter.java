@@ -19,18 +19,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * Rate limiting filter using the Token Bucket algorithm (Bucket4j).
  *
  * Rules (per IP):
- *  - /api/auth/**  → max 5 requests / 15 minutes (brute-force/credential stuffing protection)
- *  - All other    → max 60 req/min  AND  500 req/hour  (DDoS + burst protection, two layers)
+ *  - /api/auth/**  → max 30 requests / 15 minutes (brute-force/credential stuffing protection)
+ *  - All other    → max 300 req/min  AND  2000 req/hour  (DDoS + burst protection, two layers)
  */
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
+
+    // Auth limits
+    private static final int AUTH_LIMIT_CAPACITY = 30;
+    private static final Duration AUTH_LIMIT_DURATION = Duration.ofMinutes(15);
+
+    // General limits
+    private static final int GENERAL_LIMIT_PER_MINUTE = 300;
+    private static final int GENERAL_LIMIT_PER_HOUR = 2000;
 
     private final ConcurrentHashMap<String, Bucket> authBuckets    = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Bucket> generalBuckets = new ConcurrentHashMap<>();
 
     // 30 tokens refilled every 15 minutes — auth endpoints
     private Bucket newAuthBucket() {
-        Bandwidth limit = Bandwidth.classic(30, Refill.intervally(30, Duration.ofMinutes(15)));
+        Bandwidth limit = Bandwidth.classic(AUTH_LIMIT_CAPACITY, Refill.intervally(AUTH_LIMIT_CAPACITY, AUTH_LIMIT_DURATION));
         return Bucket.builder().addLimit(limit).build();
     }
  
@@ -38,8 +46,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     //   Layer 1 → 300 req/min   (burst protection)
     //   Layer 2 → 2000 req/hour (slow DDoS / scraping protection)
     private Bucket newGeneralBucket() {
-        Bandwidth perMinute = Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1)));
-        Bandwidth perHour   = Bandwidth.classic(2000, Refill.intervally(2000, Duration.ofHours(1)));
+        Bandwidth perMinute = Bandwidth.classic(GENERAL_LIMIT_PER_MINUTE, Refill.intervally(GENERAL_LIMIT_PER_MINUTE, Duration.ofMinutes(1)));
+        Bandwidth perHour   = Bandwidth.classic(GENERAL_LIMIT_PER_HOUR, Refill.intervally(GENERAL_LIMIT_PER_HOUR, Duration.ofHours(1)));
         return Bucket.builder()
                 .addLimit(perMinute)
                 .addLimit(perHour)

@@ -50,19 +50,19 @@ class RateLimitingFilterTest {
     void doFilterInternal_ShouldBlockRequestWhenAuthLimitExceeded() throws ServletException, IOException {
         request.setRequestURI("/api/auth/register");
 
-        // The auth limit is 10 requests. We will do 10 successful requests.
-        for (int i = 0; i < 10; i++) {
+        // The auth limit is 30 requests. We will do 30 successful requests.
+        for (int i = 0; i < 30; i++) {
             rateLimitingFilter.doFilterInternal(request, response, filterChain);
         }
         
-        verify(filterChain, times(10)).doFilter(request, response);
+        verify(filterChain, times(30)).doFilter(request, response);
 
-        // The 11th request should be blocked.
+        // The 31st request should be blocked.
         MockHttpServletResponse blockedResponse = new MockHttpServletResponse();
         rateLimitingFilter.doFilterInternal(request, blockedResponse, filterChain);
 
-        // Filter chain should not be called an 11th time
-        verify(filterChain, times(10)).doFilter(request, response);
+        // Filter chain should not be called a 31st time
+        verify(filterChain, times(30)).doFilter(request, response);
         assertEquals(429, blockedResponse.getStatus());
     }
 
