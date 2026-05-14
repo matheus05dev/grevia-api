@@ -87,4 +87,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "submittedBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<com.projeto1cc.grevia.core.feedback.model.AppFeedback> feedbacks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.projeto1cc.grevia.core.auth.model.RefreshToken> refreshTokens = new ArrayList<>();
 }
