@@ -97,6 +97,7 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "http://localhost:3000",
                 "https://grevia-app.vercel.app"
+                "https://*.trycloudflare.com"
         ));
         configuration.setAllowedOriginPatterns(List.of("*")); // Fallback
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
