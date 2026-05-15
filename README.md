@@ -175,6 +175,8 @@ Resposta 200:
   "currentStreak": 5,
   "totalCareActions": 42,
   "totalPoints": 210,
+  "gardenerLevel": "Jardineiro Aprendiz",
+  "gardenerLevelNumber": 2
 }
 ```
 
