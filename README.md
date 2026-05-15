@@ -232,12 +232,12 @@ Pontos ganhos ao concluir um cuidado:
 ### Níveis de Jardineiro
 O título do usuário evolui conforme os pontos acumulados:
 
-| Nível | Título | Emoji | Pontos Mínimos |
-|-------|--------|-------|----------------|
-| 1 | Jardineiro Iniciante | 🌱 | 0 |
-| 2 | Jardineiro Aprendiz | 🌿 | 50 |
-| 3 | Jardineiro Dedicado | 🪴 | 200 |
-| 4 | Mestre Botânico | 🌳 | 500 |
+| Nível | Título | Pontos Mínimos |
+|-------|--------|----------------|
+| 1 | Jardineiro Iniciante | 0 |
+| 2 | Jardineiro Aprendiz | 50 |
+| 3 | Jardineiro Dedicado | 200 |
+| 4 | Mestre Botânico | 500 |
 
 ---
 

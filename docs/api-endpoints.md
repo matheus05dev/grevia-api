@@ -1,4 +1,4 @@
-# 📡 Referência Completa de Endpoints — Grevia API
+# Referência Completa de Endpoints - Grevia API
 
 > Base URL: `http://localhost:8080` (dev) | `https://grevia-api-production.up.railway.app` (prod)
 
@@ -9,7 +9,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 🔐 Autenticação (`/api/auth`)
+## Autenticação (/api/auth)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 👤 Usuários (`/api/users`)
+## Usuários (/api/users)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -68,7 +68,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 🌿 Plantas (`/api/plants`)
+## Plantas (/api/plants)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -131,7 +131,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 💡 Feedback do App (`/api/feedback`)
+## Feedback do App (/api/feedback)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -148,7 +148,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 📋 Planos de Cuidado (`/api/plants/{plantId}/cares`)
+## Planos de Cuidado (/api/plants/{plantId}/cares)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -168,7 +168,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## ✅ Registros de Cuidado (`/api/cares/{carePlanId}/records`)
+## Registros de Cuidado (/api/cares/{carePlanId}/records)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -177,7 +177,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 📈 Observabilidade (`/actuator`)
+## Observabilidade (/actuator)
 
 | Método | Rota | Protegido | Descrição |
 |---|---|---|---|
@@ -187,7 +187,7 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
-## 📖 Documentação Interativa (Swagger)
+## Documentação Interativa (Swagger)
 
 - **Swagger UI:** `http://localhost:8080/swagger-ui.html`
 - **OpenAPI JSON:** `http://localhost:8080/api-docs`

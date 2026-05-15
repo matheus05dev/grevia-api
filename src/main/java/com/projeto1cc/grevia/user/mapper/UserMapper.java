@@ -6,8 +6,9 @@ import com.projeto1cc.grevia.user.model.User;
 import com.projeto1cc.grevia.user.model.enums.GardenerLevel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     @Mapping(target = "totalPoints", ignore = true)
@@ -34,4 +35,3 @@ public interface UserMapper {
             level.getLevel()
         );
     }
-}
