@@ -10,21 +10,21 @@ Plataforma de gerenciamento inteligente de plantas com recomendações de cuidad
 
 A Grevia descomplicar o cultivo de plantas, oferecendo **recomendações inteligentes** e **planos de cuidados personalizados**. O motor analisa o tipo de terreno e de planta (incluindo utilitárias) para sugerir as melhores espécies, enquanto os planos de cuidado gerenciam frequências de rega, registros de manutenção e muito mais.
 
-## ✨ Funcionalidades Principais
+## Funcionalidades Principais
 
 | Funcionalidade | Descrição |
 |---|---|
-| 🔐 **Autenticação JWT** | Registro, login, recuperação de senha com token por e-mail |
-| 🌿 **CRUD de Plantas** | Criação, edição, exclusão e listagem de plantas do usuário |
-| 🧠 **Recomendações** | Motor inteligente que sugere espécies baseado em terreno e tipo |
-| 📋 **Planos de Cuidado** | Cronogramas personalizados com frequências de rega dinâmicas |
-| ✅ **Registros de Cuidado** | Histórico de cuidados realizados por planta |
-| 💡 **Feedback do App** | Usuários podem enviar feedbacks gerais e sugestões de melhoria |
-| 📰 **Feed Comunitário** | Visualização pública de plantas cadastradas |
-| 🛡️ **Rate Limiting** | Proteção contra abuso via Bucket4j |
-| 👑 **Administração** | Promoção de usuários a Admin |
+| Autenticação JWT | Registro, login, recuperação de senha com token por e-mail |
+| CRUD de Plantas | Criação, edição, exclusão e listagem de plantas do usuário |
+| Recomendações | Motor inteligente que sugere espécies baseado em terreno e tipo |
+| Planos de Cuidado | Cronogramas personalizados com frequências de rega dinâmicas |
+| Registros de Cuidado | Histórico de cuidados realizados por planta |
+| Feedback do App | Usuários podem enviar feedbacks gerais e sugestões de melhoria |
+| Feed Comunitário | Visualização pública de plantas cadastradas |
+| Rate Limiting | Proteção contra abuso via Bucket4j |
+| Administração | Promoção de usuários a Admin |
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 - **Linguagem:** Java 21
 - **Framework:** Spring Boot 3.5.11 (Web, Security, Data JPA, Mail, Validation, Actuator)
@@ -40,7 +40,7 @@ A Grevia descomplicar o cultivo de plantas, oferecendo **recomendações intelig
 
 ---
 
-## 🚀 Como começar
+## Como começar
 
 ### Base URL
 ```
@@ -73,7 +73,7 @@ Resposta ao exceder: **HTTP 429**
 
 ---
 
-## 📚 Documentação
+## Documentação
 
 | Documento | Descrição |
 |---|---|
@@ -84,7 +84,7 @@ Resposta ao exceder: **HTTP 429**
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 src/main/java/com/projeto1cc/grevia/
@@ -175,8 +175,6 @@ Resposta 200:
   "currentStreak": 5,
   "totalCareActions": 42,
   "totalPoints": 210,
-  "gardenerLevel": "Jardineiro Aprendiz",
-  "gardenerLevelNumber": 2
 }
 ```
 
