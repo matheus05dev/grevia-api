@@ -96,7 +96,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
                 "http://localhost:3000",
-                "https://grevia-app.vercel.app"
+                "https://grevia-app.vercel.app",
                 "https://*.trycloudflare.com"
         ));
         configuration.setAllowedOriginPatterns(List.of("*")); // Fallback
