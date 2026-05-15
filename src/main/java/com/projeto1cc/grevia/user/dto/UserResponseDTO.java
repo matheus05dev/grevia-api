@@ -14,6 +14,5 @@ public record UserResponseDTO(
     Integer totalCareActions,
     Integer totalPoints,
     String gardenerLevel,
-    String gardenerLevelEmoji,
     Integer gardenerLevelNumber
 ) {}

@@ -31,7 +31,6 @@ public interface UserMapper {
             user.getTotalCareActions(),
             user.getTotalPoints(),
             level.getFullTitle(),
-            level.getEmoji(),
             level.getLevel()
         );
     }

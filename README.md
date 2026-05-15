@@ -153,8 +153,7 @@ Resposta 200:
   "currentStreak": 0,
   "totalCareActions": 0,
   "totalPoints": 0,
-  "gardenerLevel": "🌱 Jardineiro Iniciante",
-  "gardenerLevelEmoji": "🌱",
+  "gardenerLevel": "Jardineiro Iniciante",
   "gardenerLevelNumber": 1
 }
 ```
@@ -176,9 +175,8 @@ Resposta 200:
   "currentStreak": 5,
   "totalCareActions": 42,
   "totalPoints": 210,
-  "gardenerLevel": "🪴 Jardineiro Dedicado",
-  "gardenerLevelEmoji": "🪴",
-  "gardenerLevelNumber": 3
+  "gardenerLevel": "Jardineiro Aprendiz",
+  "gardenerLevelNumber": 2
 }
 ```
 

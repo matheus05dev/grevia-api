@@ -61,8 +61,7 @@ Authorization: Bearer <seu-token-jwt>
   "currentStreak": 5,
   "totalCareActions": 42,
   "totalPoints": 210,
-  "gardenerLevel": "🪴 Jardineiro Dedicado",
-  "gardenerLevelEmoji": "🪴",
+  "gardenerLevel": "Jardineiro Dedicado",
   "gardenerLevelNumber": 3
 }
 ```
