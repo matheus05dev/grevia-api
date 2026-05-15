@@ -35,3 +35,4 @@ public interface UserMapper {
             level.getLevel()
         );
     }
+}
