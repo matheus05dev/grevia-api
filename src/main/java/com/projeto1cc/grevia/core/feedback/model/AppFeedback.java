@@ -2,6 +2,8 @@ package com.projeto1cc.grevia.core.feedback.model;
 
 import com.projeto1cc.grevia.user.model.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +27,7 @@ public class AppFeedback {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User submittedBy;
 
     private LocalDateTime submittedAt = LocalDateTime.now();

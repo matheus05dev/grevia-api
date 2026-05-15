@@ -34,4 +34,6 @@ public interface PlantRepository extends JpaRepository<Plant, Long> {
 
     @EntityGraph(attributePaths = {"user", "carePlans"})
     org.springframework.data.domain.Page<Plant> findByUserId(Long userId, org.springframework.data.domain.Pageable pageable);
+
+    void deleteByUserId(Long userId);
 }

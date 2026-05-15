@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AppFeedbackRepository extends JpaRepository<AppFeedback, Long> {
+    void deleteBySubmittedById(Long userId);
 }

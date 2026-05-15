@@ -6,6 +6,8 @@ import com.projeto1cc.grevia.plant.enums.SoilType;
 import com.projeto1cc.grevia.plant.enums.Species;
 import com.projeto1cc.grevia.user.model.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,6 +74,7 @@ public class Plant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL, orphanRemoval = true)

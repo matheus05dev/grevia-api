@@ -56,6 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
+        } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+            log.warn("Usuário não encontrado para o token: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Usuário não encontrado\",\"code\":\"USER_NOT_FOUND\"}");
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             log.warn("Token JWT expirado para requisição: {} {}", request.getMethod(), request.getRequestURI());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

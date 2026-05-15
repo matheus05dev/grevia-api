@@ -38,6 +38,21 @@ class UserServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private com.projeto1cc.grevia.plant.repository.PlantRepository plantRepository;
+
+    @Mock
+    private com.projeto1cc.grevia.care.repository.CarePlanRepository carePlanRepository;
+
+    @Mock
+    private com.projeto1cc.grevia.care.repository.CareRecordRepository careRecordRepository;
+
+    @Mock
+    private com.projeto1cc.grevia.core.feedback.repository.AppFeedbackRepository appFeedbackRepository;
+
+    @Mock
+    private com.projeto1cc.grevia.core.auth.repository.RefreshTokenRepository refreshTokenRepository;
+
     @InjectMocks
     private UserService userService;
 
@@ -133,12 +148,53 @@ class UserServiceTest {
     }
     
     @Test
-    void deleteUserByEmail_ShouldCallDelete() {
+    void deleteUserByEmail_ShouldDeleteAllRelatedEntitiesAndUser() {
+        // Setup user
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(plantRepository.findByUserId(1L)).thenReturn(java.util.Collections.emptyList());
 
         userService.deleteUserByEmail("test@test.com");
 
+        verify(appFeedbackRepository, times(1)).deleteBySubmittedById(1L);
+        verify(refreshTokenRepository, times(1)).deleteByUserId(1L);
         verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void deleteUserByEmail_ShouldDeletePlantsWithCarePlansAndRecords() {
+        // Setup user with a plant that has a care plan with records
+        com.projeto1cc.grevia.plant.model.Plant plant = new com.projeto1cc.grevia.plant.model.Plant();
+        plant.setId(10L);
+
+        com.projeto1cc.grevia.care.model.CarePlan carePlan = new com.projeto1cc.grevia.care.model.CarePlan();
+        carePlan.setId(20L);
+
+        com.projeto1cc.grevia.care.model.CareRecord careRecord = new com.projeto1cc.grevia.care.model.CareRecord();
+        careRecord.setId(30L);
+
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(plantRepository.findByUserId(1L)).thenReturn(java.util.List.of(plant));
+        when(carePlanRepository.findByPlantId(10L)).thenReturn(java.util.List.of(carePlan));
+        when(careRecordRepository.findByCarePlanId(20L)).thenReturn(java.util.List.of(careRecord));
+
+        userService.deleteUserByEmail("test@test.com");
+
+        // Verify deletion order: records -> plans -> plants -> feedbacks -> tokens -> user
+        verify(careRecordRepository, times(1)).deleteAll(java.util.List.of(careRecord));
+        verify(carePlanRepository, times(1)).deleteAll(java.util.List.of(carePlan));
+        verify(plantRepository, times(1)).deleteAll(java.util.List.of(plant));
+        verify(appFeedbackRepository, times(1)).deleteBySubmittedById(1L);
+        verify(refreshTokenRepository, times(1)).deleteByUserId(1L);
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void deleteUserByEmail_ShouldDoNothingWhenUserNotFound() {
+        when(userRepository.findByEmail("notfound@test.com")).thenReturn(Optional.empty());
+
+        userService.deleteUserByEmail("notfound@test.com");
+
+        verify(userRepository, never()).delete(any(User.class));
     }
 
     @Test

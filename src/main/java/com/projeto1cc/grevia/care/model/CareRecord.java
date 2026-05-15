@@ -1,6 +1,8 @@
 package com.projeto1cc.grevia.care.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,5 +26,6 @@ public class CareRecord {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "care_plan_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private CarePlan carePlan;
 }

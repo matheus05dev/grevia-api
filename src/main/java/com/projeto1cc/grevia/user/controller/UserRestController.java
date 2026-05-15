@@ -11,6 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,10 +42,21 @@ public class UserRestController {
 
     // DELETE /api/users/me — Hard deletes the authenticated user's own account
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deactivateMyAccount() {
+    public ResponseEntity<Void> deactivateMyAccount(HttpServletResponse response) {
         String email = getAuthenticatedEmail();
         userService.deleteUserByEmail(email);
-        return ResponseEntity.noContent().build();
+        
+        ResponseCookie clearCookie = ResponseCookie.from("grevia_refresh_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/api/auth/refresh")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, clearCookie.toString())
+                .build();
     }
 
     // PUT /api/users/me/password - Changes the authenticated user's password

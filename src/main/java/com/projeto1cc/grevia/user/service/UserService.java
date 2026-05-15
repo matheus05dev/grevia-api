@@ -9,6 +9,11 @@ import com.projeto1cc.grevia.user.model.User;
 import com.projeto1cc.grevia.user.model.enums.Role;
 import com.projeto1cc.grevia.user.model.enums.Status;
 import com.projeto1cc.grevia.user.repository.UserRepository;
+import com.projeto1cc.grevia.plant.repository.PlantRepository;
+import com.projeto1cc.grevia.care.repository.CarePlanRepository;
+import com.projeto1cc.grevia.care.repository.CareRecordRepository;
+import com.projeto1cc.grevia.core.feedback.repository.AppFeedbackRepository;
+import com.projeto1cc.grevia.core.auth.repository.RefreshTokenRepository;
 import com.projeto1cc.grevia.core.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,11 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final PlantRepository plantRepository;
+    private final CarePlanRepository carePlanRepository;
+    private final CareRecordRepository careRecordRepository;
+    private final AppFeedbackRepository appFeedbackRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
@@ -91,6 +101,22 @@ public class UserService {
     @Transactional
     public void deleteUserByEmail(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
+            Long userId = user.getId();
+
+            // Delete all child entities in correct order (deepest first)
+            // CareRecords -> CarePlans -> Plants -> Feedbacks -> RefreshTokens -> User
+            java.util.List<com.projeto1cc.grevia.plant.model.Plant> plants = plantRepository.findByUserId(userId);
+            for (com.projeto1cc.grevia.plant.model.Plant plant : plants) {
+                java.util.List<com.projeto1cc.grevia.care.model.CarePlan> carePlans = carePlanRepository.findByPlantId(plant.getId());
+                for (com.projeto1cc.grevia.care.model.CarePlan carePlan : carePlans) {
+                    careRecordRepository.deleteAll(careRecordRepository.findByCarePlanId(carePlan.getId()));
+                }
+                carePlanRepository.deleteAll(carePlans);
+            }
+            plantRepository.deleteAll(plants);
+            appFeedbackRepository.deleteBySubmittedById(userId);
+            refreshTokenRepository.deleteByUserId(userId);
+
             userRepository.delete(user);
             log.info("Usuário excluído permanentemente: {}", email);
         });

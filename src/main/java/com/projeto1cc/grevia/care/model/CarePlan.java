@@ -4,6 +4,8 @@ import com.projeto1cc.grevia.care.enums.CareType;
 import com.projeto1cc.grevia.care.enums.FrequencyType;
 import com.projeto1cc.grevia.plant.model.Plant;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +37,7 @@ public class CarePlan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Plant plant;
 
     @OneToMany(mappedBy = "carePlan", cascade = CascadeType.ALL, orphanRemoval = true)
