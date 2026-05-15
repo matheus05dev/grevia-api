@@ -73,7 +73,7 @@ class UserServiceTest {
         when(userMapper.toUser(userRequestDTO)).thenReturn(user);
         when(passwordEncoder.encode("password")).thenReturn("encoded_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toUserResponseDTO(any(User.class))).thenReturn(new UserResponseDTO(user.getName(), user.getEmail(), Role.USER, Status.Active, null, 0, 0, 0, "🌱 Jardineiro Iniciante", "🌱", 1));
+        when(userMapper.toUserResponseDTO(any(User.class))).thenReturn(new UserResponseDTO(user.getName(), user.getEmail(), Role.USER, Status.Active, null, 0, 0, 0, "Jardineiro Iniciante", 1));
 
         UserResponseDTO response = userService.createUser(userRequestDTO);
 

@@ -151,14 +151,14 @@ class CarePlanServiceTest {
         when(carePlanRepository.findById(100L)).thenReturn(Optional.of(carePlan));
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
         when(carePlanRepository.save(any())).thenReturn(carePlan);
-        when(carePlanMapper.toResponseDTO(any(), eq(true), eq("🌿 Jardineiro Aprendiz")))
+        when(carePlanMapper.toResponseDTO(any(), eq(true), eq("Jardineiro Aprendiz")))
             .thenReturn(new CarePlanResponseDTO(100L, CareType.REGA, FrequencyType.SEMANAL,
-                LocalDate.now().plusWeeks(1), LocalDate.now(), 10L, true, "🌿 Jardineiro Aprendiz"));
+                LocalDate.now().plusWeeks(1), LocalDate.now(), 10L, true, "Jardineiro Aprendiz"));
 
         CarePlanResponseDTO result = carePlanService.completeCarePlan(10L, 100L, null, "test@test.com");
 
         assertEquals(50, user.getTotalPoints());
-        verify(carePlanMapper).toResponseDTO(any(), eq(true), eq("🌿 Jardineiro Aprendiz"));
+        verify(carePlanMapper).toResponseDTO(any(), eq(true), eq("Jardineiro Aprendiz"));
     }
 
     @Test

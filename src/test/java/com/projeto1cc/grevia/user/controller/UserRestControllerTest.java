@@ -49,7 +49,7 @@ class UserRestControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void getMyProfile_ShouldReturn200AndProfile() throws Exception {
-        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "🌱 Jardineiro Iniciante", "🌱", 1);
+        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "Jardineiro Iniciante", 1);
 
         Mockito.when(userService.findUserByEmail("test@test.com")).thenReturn(Optional.of(responseDTO));
 
@@ -72,7 +72,7 @@ class UserRestControllerTest {
     @WithMockUser(username = "test@test.com")
     void updateMyProfile_ShouldReturn200AndUpdatedProfile() throws Exception {
         UserRequestDTO requestDTO = new UserRequestDTO("Updated Name", null, null, null, null);
-        UserResponseDTO responseDTO = new UserResponseDTO("Updated Name", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "🌱 Jardineiro Iniciante", "🌱", 1);
+        UserResponseDTO responseDTO = new UserResponseDTO("Updated Name", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "Jardineiro Iniciante", 1);
 
         Mockito.when(userService.updateUserByEmail(eq("test@test.com"), any(UserRequestDTO.class))).thenReturn(Optional.of(responseDTO));
 

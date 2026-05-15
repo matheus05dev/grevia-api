@@ -60,7 +60,7 @@ class AuthRestControllerTest {
     @Test
     void register_ShouldReturn200AndUserResponse() throws Exception {
         UserRequestDTO requestDTO = new UserRequestDTO("Test", "test@test.com", "password", null, null);
-        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "🌱 Jardineiro Iniciante", "🌱", 1);
+        UserResponseDTO responseDTO = new UserResponseDTO("Test", "test@test.com", Role.USER, Status.Active, null, 0, 0, 0, "Jardineiro Iniciante", 1);
 
         Mockito.when(userService.createUser(any(UserRequestDTO.class))).thenReturn(responseDTO);
 

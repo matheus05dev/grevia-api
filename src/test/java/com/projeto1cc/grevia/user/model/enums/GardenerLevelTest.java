@@ -43,8 +43,8 @@ class GardenerLevelTest {
 
     @Test
     void getFullTitle_ShouldCombineEmojiAndTitle() {
-        assertEquals("🌱 Jardineiro Iniciante", GardenerLevel.INICIANTE.getFullTitle());
-        assertEquals("🌳 Mestre Botânico", GardenerLevel.MESTRE.getFullTitle());
+        assertEquals("Jardineiro Iniciante", GardenerLevel.INICIANTE.getFullTitle());
+        assertEquals("Mestre Botânico", GardenerLevel.MESTRE.getFullTitle());
     }
 
     @Test
