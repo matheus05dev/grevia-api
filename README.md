@@ -1,262 +1,71 @@
-# Grevia API
+<div align="center">
+  <h1>🌱 Grevia API</h1>
+  <p><strong>Plataforma de gerenciamento inteligente de plantas com recomendações de cuidados e gamificação.</strong></p>
+  
+  ![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
+  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.11-6DB33F?style=for-the-badge&logo=spring)
+  ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
+  ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker)
+  ![JWT](https://img.shields.io/badge/JWT-Security-black?style=for-the-badge&logo=json-web-tokens)
 
-Plataforma de gerenciamento inteligente de plantas com recomendações de cuidados e gamificação.
-
-**Stack**: Spring Boot 3.5 · Java 21 · MySQL · JWT
+</div>
 
 ---
 
-## 🎯 Propósito
+## 📖 Sobre o Projeto
 
-A Grevia descomplicar o cultivo de plantas, oferecendo **recomendações inteligentes** e **planos de cuidados personalizados**. O motor analisa o tipo de terreno e de planta (incluindo utilitárias) para sugerir as melhores espécies, enquanto os planos de cuidado gerenciam frequências de rega, registros de manutenção e muito mais.
+> 🎓 **Nota:** Este é um projeto acadêmico desenvolvido para a Universidade Paulista (UNIP).
 
-## Funcionalidades Principais
+A **Grevia** nasceu para descomplicar o cultivo de plantas, oferecendo recomendações inteligentes e planos de cuidados personalizados. O motor analisa o tipo de terreno e de planta para sugerir as melhores espécies, enquanto os planos de cuidado gerenciam frequências de rega, registros de manutenção e muito mais. Tudo isso atrelado a um sistema de **gamificação** que recompensa os usuários que cuidam bem de suas plantas!
 
-| Funcionalidade | Descrição |
+---
+
+## ✨ Funcionalidades Principais
+
+- 🔐 **Autenticação JWT**: Registro, login e recuperação de senha segura.
+- 🌿 **Gestão de Plantas**: CRUD completo de plantas do usuário.
+- 🧠 **Recomendações Inteligentes**: Motor que sugere espécies baseado em características do terreno e tipo.
+- 📅 **Planos de Cuidado**: Cronogramas personalizados com frequências dinâmicas.
+- 📜 **Registros de Cuidado**: Histórico de manutenções realizadas em cada planta.
+- 🏆 **Gamificação**: Sistema de pontuação, streaks (ofensivas) e níveis de jardineiro.
+- 🛡️ **Rate Limiting**: Proteção de endpoints contra abusos utilizando Bucket4j.
+- 🗣️ **Feedback Comunitário**: Envio de feedbacks e sugestões pelos usuários.
+
+---
+
+## 🛠️ Stack Tecnológica
+
+| Categoria | Tecnologia |
 |---|---|
-| Autenticação JWT | Registro, login, recuperação de senha com token por e-mail |
-| CRUD de Plantas | Criação, edição, exclusão e listagem de plantas do usuário |
-| Recomendações | Motor inteligente que sugere espécies baseado em terreno e tipo |
-| Planos de Cuidado | Cronogramas personalizados com frequências de rega dinâmicas |
-| Registros de Cuidado | Histórico de cuidados realizados por planta |
-| Feedback do App | Usuários podem enviar feedbacks gerais e sugestões de melhoria |
-| Feed Comunitário | Visualização pública de plantas cadastradas |
-| Rate Limiting | Proteção contra abuso via Bucket4j |
-| Administração | Promoção de usuários a Admin |
-
-## Stack Tecnológica
-
-- **Linguagem:** Java 21
-- **Framework:** Spring Boot 3.5.11 (Web, Security, Data JPA, Mail, Validation, Actuator)
-- **Banco de Dados:** MySQL 8.0
-- **Segurança:** Spring Security + JWT (JJWT 0.12.3)
-- **Mapeamento:** MapStruct 1.5.5 + Lombok
-- **E-mail:** Spring Mail + Resend SDK 3.1.0
-- **Rate Limiting:** Bucket4j 8.10.1
-- **Documentação:** Springdoc OpenAPI 2.8.15 (Swagger UI)
-- **Testes:** JUnit 5, Mockito, MockMvc
-- **Infraestrutura:** Docker + Docker Compose
-- **Observabilidade:** Spring Actuator (health, info, metrics)
+| **Linguagem** | Java 21 |
+| **Framework** | Spring Boot 3.5.11 (Web, Security, Data JPA, Mail, Validation, Actuator) |
+| **Banco de Dados** | MySQL 8.0 |
+| **Segurança** | Spring Security + JWT (JJWT 0.12.3) |
+| **Mapeamento/Boilerplate**| MapStruct 1.5.5 + Lombok |
+| **E-mail** | Spring Mail + Resend SDK 3.1.0 |
+| **Proteção da API** | Bucket4j 8.10.1 (Rate Limiting) |
+| **Documentação** | Springdoc OpenAPI 2.8.15 (Swagger UI) |
+| **Testes** | JUnit 5, Mockito, MockMvc |
+| **Infraestrutura** | Docker + Docker Compose |
 
 ---
 
-## Como começar
+## 🚀 Como Executar o Projeto
 
-### Base URL
-```
-http://localhost:8080
-```
-**Swagger UI**: `http://localhost:8080/swagger-ui.html`
+### Pré-requisitos
+Antes de começar, certifique-se de ter instalado em sua máquina:
+- **Java 21**
+- **Docker e Docker Compose** (Opcional, mas recomendado para o banco de dados)
+- **Maven** (Caso não utilize o Wrapper do projeto)
 
-### Autenticação
-JWT Bearer Token. Expira em **24 horas**.
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-Rotas públicas:
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/forgot-password`
-- `POST /api/auth/reset-password`
-
-### CORS
-Origens permitidas: `localhost:5173`, `localhost:3000`, `https://grevia-app.vercel.app`
-
-### Rate Limiting
-| Rota | Limite |
-|------|--------|
-| `/api/auth/**` | 10 req / 15 min por IP |
-| Todas as outras | 60 req/min · 500 req/hora por IP |
-
-Resposta ao exceder: **HTTP 429**
-
----
-
-## Documentação
-
-| Documento | Descrição |
-|---|---|
-| 📖 [Arquitetura do Backend](docs/backend-architecture.md) | Módulos, segurança, filtros e padrões |
-| 🚀 [Guia de Execução Local](docs/how-to-run.md) | Como rodar DB + API no seu computador |
-| 📡 [Referência de Endpoints](docs/api-endpoints.md) | Todos os endpoints da API documentados |
-| ☁️ [Guia de Deploy](README-deploy.md) | Deploy com Docker em VM (Oracle Cloud) |
-
----
-
-## Estrutura do Projeto
-
-```
-src/main/java/com/projeto1cc/grevia/
-├── core/                    # Infraestrutura compartilhada
-│   ├── auth/                #   Autenticação (controller, DTOs, JWT service)
-│   ├── config/              #   Configurações (Security, Cloudinary, SpringDoc, Filtros)
-│   ├── feedback/            #   Gestão de Feedback do App
-│   ├── security/            #   Rate Limiting filter
-│   ├── service/             #   Serviços transversais (Cloudinary, Email)
-│   └── storage/             #   Abstração de armazenamento
-├── plant/                   # Domínio de Plantas
-│   ├── controller/          #   PlantRestController
-│   ├── dto/                 #   Request/Response DTOs
-│   ├── enums/               #   Species, PlantType, TerrainType
-│   ├── mapper/              #   MapStruct mappers
-│   ├── model/               #   Entidades JPA
-│   ├── repository/          #   Spring Data repositories
-│   └── service/             #   PlantService, RecommendationService
-├── care/                    # Domínio de Cuidados
-│   ├── controller/          #   CarePlanRestController, CareRecordRestController
-│   ├── dto/                 #   Request/Response DTOs
-│   ├── enums/               #   CareType, WateringFrequency
-│   ├── mapper/              #   MapStruct mappers
-│   ├── model/               #   Entidades JPA
-│   ├── repository/          #   Spring Data repositories
-│   └── service/             #   CarePlanService, CareRecordService, SpeciesCareService
-└── user/                    # Domínio de Usuários
-    ├── controller/          #   UserRestController
-    ├── dto/                 #   Request/Response DTOs
-    ├── mapper/              #   MapStruct mappers
-    ├── model/               #   Entidade User
-    ├── repository/          #   UserRepository
-    └── service/             #   UserService
+### 1. Clonando o Repositório
+```bash
+git clone https://github.com/matheus05dev/grevia-api.git
+cd grevia-api
 ```
 
----
-
-## Erros de Autenticação
-
-**Token expirado** → HTTP 401
-```json
-{ "error": "Token expirado", "code": "TOKEN_EXPIRED" }
-```
-
-**Token inválido** → HTTP 401
-```json
-{ "error": "Token inválido", "code": "TOKEN_INVALID" }
-```
-
----
-
-## Endpoints Principais
-
-### Auth
-
-#### Registro
-`POST /api/auth/register`
-Resposta 200:
-```json
-{
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "role": "USER",
-  "status": "Active",
-  "lastCareDate": null,
-  "currentStreak": 0,
-  "totalCareActions": 0,
-  "totalPoints": 0,
-  "gardenerLevel": "Jardineiro Iniciante",
-  "gardenerLevelNumber": 1
-}
-```
-
----
-
-### Usuário
-
-#### Perfil do usuário logado
-`GET /api/users/me`
-Resposta 200:
-```json
-{
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "role": "USER",
-  "status": "Active",
-  "lastCareDate": "2026-05-13",
-  "currentStreak": 5,
-  "totalCareActions": 42,
-  "totalPoints": 210,
-  "gardenerLevel": "Jardineiro Aprendiz",
-  "gardenerLevelNumber": 2
-}
-```
-
----
-
-### Plantas
-
-#### Criar planta
-`POST /api/plants`
-Body:
-```json
-{
-  "name": "Minha Samambaia",
-  "species": "SAMAMBAIA",
-  "soilType": "HUMOSO"
-}
-```
-Resposta 200:
-```json
-{
-  "id": 1,
-  "name": "Minha Samambaia",
-  "species": "SAMAMBAIA",
-  "customSpeciesName": null,
-  "recommendations": "...",
-  "soilType": "HUMOSO",
-  "ownerName": "João Silva",
-  "utility": "ORNAMENTAL",
-  "utilityDisplayName": "Ornamental",
-  "soilTypeDisplayName": "Humoso",
-  "progressPercentage": 1.4,
-  "daysRemaining": 69,
-  "status": "ALIVE"
-}
-```
-
----
-
-## Gamificação e Níveis
-
-### Sistema de Pontos
-Pontos ganhos ao concluir um cuidado:
-
-| Condição | Pontos |
-|----------|--------|
-| Base | +10 |
-| Cuidado no dia exato | +15 |
-| Cuidado 1-2 dias fora | +5 |
-| Multiplicador de streak | `currentStreak × 2` |
-
-**Streak**: incrementa se o cuidado ocorrer no dia seguinte consecutivo. Zera se pular um dia.
-
-### Níveis de Jardineiro
-O título do usuário evolui conforme os pontos acumulados:
-
-| Nível | Título | Pontos Mínimos |
-|-------|--------|----------------|
-| 1 | Jardineiro Iniciante | 0 |
-| 2 | Jardineiro Aprendiz | 50 |
-| 3 | Jardineiro Dedicado | 200 |
-| 4 | Mestre Botânico | 500 |
-
----
-
-## Fluxo Típico para o Frontend
-
-```
-1. POST /api/auth/register  → cria conta
-2. POST /api/auth/login     → obtém JWT
-3. GET /api/users/me        → perfil + nível
-4. POST /api/plants         → cadastrar planta
-5. POST /api/plants/{plantId}/cares/{careId}/complete → ganhar pontos
-6. GET /api/users/me        → ver evolução de nível
-7. Em qualquer 401 → limpar token e redirecionar para login
-```
-
----
-
-## Variáveis de Ambiente
-
+### 2. Configurando as Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto (ou configure as variáveis no seu sistema) baseado nas seguintes chaves:
 ```env
 MYSQLHOST=localhost
 MYSQLPORT=3306
@@ -265,16 +74,82 @@ MYSQLUSER=user
 MYSQLPASSWORD=admin
 SPRING_MAIL_HOST=smtp.gmail.com
 SPRING_MAIL_PORT=587
-SPRING_MAIL_USERNAME=contactgrevia@gmail.com
-SPRING_MAIL_PASSWORD=<app-password>
+SPRING_MAIL_USERNAME=seu_email@gmail.com
+SPRING_MAIL_PASSWORD=sua_senha_de_app
 ```
+
+### 3. Rodando com Docker (Recomendado)
+Para subir o banco de dados e a aplicação simultaneamente:
+```bash
+docker-compose up -d
+```
+
+### 4. Rodando Localmente (via Maven)
+Caso prefira rodar apenas o banco no Docker e a aplicação na sua IDE ou terminal:
+```bash
+docker-compose up -d db
+./mvnw spring-boot:run
+```
+
+A API estará disponível em: `http://localhost:8080`
 
 ---
 
-## Health Check
+## 📚 Documentação da API
 
-```
-GET /actuator/health
-GET /actuator/info
-GET /actuator/metrics
-```
+A documentação interativa (Swagger) pode ser acessada após iniciar o projeto em:
+👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+
+### Resumo dos Principais Endpoints
+
+| Recurso | Rota | Método | Descrição |
+|---|---|---|---|
+| **Auth** | `/api/auth/register` | `POST` | Cria uma nova conta |
+| **Auth** | `/api/auth/login` | `POST` | Retorna o token JWT |
+| **Usuário** | `/api/users/me` | `GET` | Retorna o perfil do usuário logado |
+| **Plantas** | `/api/plants` | `POST` | Cadastra uma nova planta |
+| **Cuidados** | `/api/plants/{id}/cares/{id}/complete`| `POST` | Marca um cuidado como concluído e ganha pontos |
+
+*Para mais detalhes, consulte os arquivos na pasta `/docs`.*
+
+---
+
+## 🎮 Sistema de Gamificação
+
+A Grevia incentiva o cuidado com as plantas através de um sistema de recompensas!
+
+**Pontuação por Cuidado:**
+- **Base:** +10 pontos
+- **No dia exato:** +15 pontos adicionais
+- **Multiplicador de Ofensiva (Streak):** `currentStreak × 2` (manter a consistência aumenta os pontos ganhos)
+
+**Níveis de Jardineiro:**
+Seu título evolui conforme seu engajamento:
+- 🌱 **Nível 1:** Jardineiro Iniciante (0 pts)
+- 🌿 **Nível 2:** Jardineiro Aprendiz (50 pts)
+- 🌻 **Nível 3:** Jardineiro Dedicado (200 pts)
+- 🌳 **Nível 4:** Mestre Botânico (500 pts)
+
+---
+
+## 🤝 Como Contribuir
+
+Como este é um projeto open-source, contribuições são muito bem-vindas!
+
+1. Faça um **Fork** do projeto
+2. Crie uma **Branch** para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Faça o **Commit** de suas alterações (`git commit -m 'feat: adicionando nova funcionalidade'`)
+4. Faça o **Push** para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um **Pull Request**
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+<div align="center">
+  Feito com ❤️ por <a href="https://github.com/matheus05dev">Matheus Nunes</a>.
+</div>
