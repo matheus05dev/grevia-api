@@ -144,12 +144,6 @@ Como este é um projeto open-source, contribuições são muito bem-vindas!
 
 ---
 
-## 📄 Licença
-
-Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
 <div align="center">
-  Feito com ❤️ por <a href="https://github.com/matheus05dev">Matheus Nunes</a>.
+  Feit por <a href="https://github.com/matheus05dev">Matheus Nunes</a>.
 </div>
