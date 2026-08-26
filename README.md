@@ -132,18 +132,6 @@ Seu título evolui conforme seu engajamento:
 
 ---
 
-## 🤝 Como Contribuir
-
-Como este é um projeto open-source, contribuições são muito bem-vindas!
-
-1. Faça um **Fork** do projeto
-2. Crie uma **Branch** para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Faça o **Commit** de suas alterações (`git commit -m 'feat: adicionando nova funcionalidade'`)
-4. Faça o **Push** para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um **Pull Request**
-
----
-
 <div align="center">
   Feit por <a href="https://github.com/matheus05dev">Matheus Nunes</a>.
 </div>
